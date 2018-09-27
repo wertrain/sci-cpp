@@ -1,2 +1,2 @@
 # sci-cpp
-SCI is Standard Communication Interface.
+SCI is **S**tandard **C**ommunication **I**nterface.
