@@ -134,7 +134,9 @@
     <ClCompile Include="Source\SCI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Client\SCIClient.h" />
     <ClInclude Include="Include\SCI.h" />
+    <ClInclude Include="Include\Server\SCIServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

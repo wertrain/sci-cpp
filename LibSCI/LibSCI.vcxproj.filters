@@ -9,6 +9,12 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Include\Client">
+      <UniqueIdentifier>{8f0e018d-fd42-4e24-80cf-210de3341ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Server">
+      <UniqueIdentifier>{ca86ad86-bb09-43c4-8790-07f5da4dcb2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -21,6 +27,12 @@
   <ItemGroup>
     <ClInclude Include="Include\SCI.h">
       <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Client\SCIClient.h">
+      <Filter>Include\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Server\SCIServer.h">
+      <Filter>Include\Server</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
