@@ -3,6 +3,7 @@
 
 int main()
 {
-    std::cout << "hello, world" << std::endl;
+    sci::SCITest();
+
     return 0;
 }
