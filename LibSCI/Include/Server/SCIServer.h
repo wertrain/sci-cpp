@@ -1,7 +1,12 @@
 #pragma once
 
-/// サーバを表すクラス
-class SCIServer
+namespace sci
 {
 
-};
+    /// サーバを表すクラス
+    class SCIServer
+    {
+
+    };
+
+}; // namespace sci
