@@ -1,4 +1,4 @@
-#include "../Include/SCI.h"
+#include <SCI/SCI.h>
 #include <iostream>
 
 namespace sci

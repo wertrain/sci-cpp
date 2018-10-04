@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Client/SCIClient.h"
-#include "Server/SCIServer.h"
+#include <SCI/Client/SCIClient.h>
+#include <SCI/Server/SCIServer.h>
 
 namespace sci
 {

@@ -9,30 +9,42 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Include\Client">
+    <Filter Include="Include\SCI">
+      <UniqueIdentifier>{a8c6b743-4689-425d-bba7-9ece69d58a3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\SCI\Client">
       <UniqueIdentifier>{8f0e018d-fd42-4e24-80cf-210de3341ab3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Include\Server">
+    <Filter Include="Include\SCI\Server">
       <UniqueIdentifier>{ca86ad86-bb09-43c4-8790-07f5da4dcb2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\SCI">
+      <UniqueIdentifier>{cd58355c-6272-40ea-a599-0830c7459bcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\SCI\Client">
+      <UniqueIdentifier>{aa81d873-4339-4f5c-b33a-787446c83a3b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\SCI.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
+    <ClInclude Include="Include\SCI\Client\SCIClient.h">
+      <Filter>Include\SCI\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SCI\Server\SCIServer.h">
+      <Filter>Include\SCI\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SCI\SCI.h">
+      <Filter>Include\SCI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\SCI.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Client\SCIClient.h">
-      <Filter>Include\Client</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Server\SCIServer.h">
-      <Filter>Include\Server</Filter>
-    </ClInclude>
+    <ClCompile Include="Source\SCI\SCI.cpp">
+      <Filter>Source\SCI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SCI\Client\SCIClient.cpp">
+      <Filter>Source\SCI\Client</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

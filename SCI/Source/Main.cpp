@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SCI.h>
+#include <SCI/SCI.h>
 
 int main()
 {
