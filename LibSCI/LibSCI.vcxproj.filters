@@ -24,6 +24,9 @@
     <Filter Include="Source\SCI\Client">
       <UniqueIdentifier>{aa81d873-4339-4f5c-b33a-787446c83a3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\SCI\Server">
+      <UniqueIdentifier>{9d52cae9-8347-48ff-8c5e-7dabeddae55f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -45,6 +48,9 @@
     </ClCompile>
     <ClCompile Include="Source\SCI\Client\SCIClient.cpp">
       <Filter>Source\SCI\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SCI\Server\SCIServer.cpp">
+      <Filter>Source\SCI\Server</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
