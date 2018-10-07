@@ -10,7 +10,9 @@ class SCIClient
 {
 public:
     SCIClient();
-    virtual ~SCIClient();
+    ~SCIClient();
+
+    bool Connect();
 
 private:
     class Impl;
