@@ -31,6 +31,9 @@ public:
     bool Connect(const int port, const char* address);
     bool Disconnect();
     void Proc(long long intervalOfTime);
+    int Send(const char* buffer, const size_t bufferSize);
+    ConnectionStatus GetStatus() const;
+    int GetLastError() const;
 
 private:
     ConnectionStatus mStatus;
@@ -51,6 +54,8 @@ SCIClient::Impl::~Impl()
 
 bool SCIClient::Impl::Connect(const int port, const char* address)
 {
+    mStatus = ConnectionStatus::TRY_CONNECT;
+
     mSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (mSocket == INVALID_SOCKET)
     {
@@ -80,6 +85,8 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
 
     th.join();
 
+    mStatus = ConnectionStatus::CONNECTED;
+
     return true;
 }
 
@@ -93,6 +100,21 @@ bool SCIClient::Impl::Disconnect()
     {
         closesocket(mSocket);
     }
+}
+
+int SCIClient::Impl::Send(const char* buffer, const size_t bufferSize)
+{
+    return send(mSocket, buffer, bufferSize, 0);
+}
+
+SCIClient::Impl::ConnectionStatus SCIClient::Impl::GetStatus() const
+{
+    return mStatus;
+}
+
+int SCIClient::Impl::GetLastError() const
+{
+    return WSAGetLastError();
 }
 
 void SCIClient::Impl::Proc(long long intervalOfTime)
@@ -139,6 +161,11 @@ bool SCIClient::Connect(const int port, const char* address)
 bool SCIClient::Disconnect()
 {
     return mImpl->Disconnect();
+}
+
+int SCIClient::Send(const char* buffer, const size_t bufferSize)
+{
+    return mImpl->Send(buffer, bufferSize);
 }
 
 }; // namespace sci

@@ -14,6 +14,7 @@ public:
 
     bool Connect(const int port, const char* address);
     bool Disconnect();
+    int Send(const char* buffer, const size_t bufferSize);
 
 private:
     class Impl;

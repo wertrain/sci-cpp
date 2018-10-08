@@ -50,6 +50,8 @@ SCIServer::Impl::~Impl()
 
 bool SCIServer::Impl::Connect(const int port, const char* address)
 {
+    mStatus = ConnectionStatus::TRY_CONNECT;
+
     mSocket = socket(PF_INET, SOCK_STREAM, 0);
     if (mSocket == INVALID_SOCKET)
     {
@@ -85,6 +87,8 @@ bool SCIServer::Impl::Connect(const int port, const char* address)
     }
 
     th.join();
+
+    mStatus = ConnectionStatus::CONNECTED;
 
     return true;
 }
