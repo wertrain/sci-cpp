@@ -1,12 +1,23 @@
+#include <winsock2.h>
 #include <SCI/SCI.h>
-#include <iostream>
 
 namespace sci
 {
 
-    void SCITest()
+static WSADATA sWsaData;
+
+bool SCIInitialize()
+{
+    if (int error = WSAStartup(MAKEWORD(2, 0), &sWsaData))
     {
-        std::cout << "hello, SCI" << std::endl;
+        return false;
     }
+    return true;
+}
+ 
+void SCIFinalize()
+{
+    WSACleanup();
+}
 
 }; // namespace sci

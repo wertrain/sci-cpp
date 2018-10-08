@@ -5,7 +5,10 @@
 
 namespace sci
 {
-    /// SCI ‚ÌƒeƒXƒgŠÖ”‚Å‚·
-    void SCITest();
+
+/// 
+bool SCIInitialize();
+/// 
+void SCIFinalize();
 
 }; // namespace sci

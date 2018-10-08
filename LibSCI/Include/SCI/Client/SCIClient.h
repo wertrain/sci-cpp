@@ -12,7 +12,8 @@ public:
     SCIClient();
     ~SCIClient();
 
-    bool Connect();
+    bool Connect(const int port, const char* address);
+    bool Disconnect();
 
 private:
     class Impl;
