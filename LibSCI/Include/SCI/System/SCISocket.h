@@ -5,12 +5,12 @@
 namespace sci
 {
 
-/// クライアントを表すクラス
-class SCIClient
+/// ソケットを表すクラス
+class SCISocket
 {
 public:
-    SCIClient();
-    ~SCIClient();
+    SCISocket();
+    ~SCISocket();
 
     bool Connect(const int port, const char* address);
     bool Disconnect();

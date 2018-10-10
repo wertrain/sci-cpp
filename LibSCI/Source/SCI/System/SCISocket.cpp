@@ -5,14 +5,14 @@
 #include <string>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <SCI/Client/SCIClient.h>
+#include <SCI/System/SCISocket.h>
 
 namespace sci
 {
 
 static const long long INTERVAL_OF_TIME_MILLISECONDS = 1000;
 
-class SCIClient::Impl
+class SCISocket::Impl
 {
 public:
     enum ConnectionStatus : uint32_t
@@ -40,19 +40,19 @@ private:
     SOCKET mSocket;
 };
 
-SCIClient::Impl::Impl()
+SCISocket::Impl::Impl()
     : mStatus(ConnectionStatus::NONE)
     , mSocket(INVALID_SOCKET)
 {
 
 }
 
-SCIClient::Impl::~Impl()
+SCISocket::Impl::~Impl()
 {
     Disconnect();
 }
 
-bool SCIClient::Impl::Connect(const int port, const char* address)
+bool SCISocket::Impl::Connect(const int port, const char* address)
 {
     mStatus = ConnectionStatus::TRY_CONNECT;
 
@@ -76,7 +76,7 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
         return false;
     }
 
-    std::thread th(&SCIClient::Impl::Proc, this, INTERVAL_OF_TIME_MILLISECONDS);
+    std::thread th(&SCISocket::Impl::Proc, this, INTERVAL_OF_TIME_MILLISECONDS);
 
     if (!th.joinable())
     {
@@ -90,7 +90,7 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
     return true;
 }
 
-bool SCIClient::Impl::Disconnect()
+bool SCISocket::Impl::Disconnect()
 {
     if (mSocket == INVALID_SOCKET)
     {
@@ -102,22 +102,22 @@ bool SCIClient::Impl::Disconnect()
     }
 }
 
-int SCIClient::Impl::Send(const char* buffer, const size_t bufferSize)
+int SCISocket::Impl::Send(const char* buffer, const size_t bufferSize)
 {
     return send(mSocket, buffer, bufferSize, 0);
 }
 
-SCIClient::Impl::ConnectionStatus SCIClient::Impl::GetStatus() const
+SCISocket::Impl::ConnectionStatus SCISocket::Impl::GetStatus() const
 {
     return mStatus;
 }
 
-int SCIClient::Impl::GetLastError() const
+int SCISocket::Impl::GetLastError() const
 {
     return WSAGetLastError();
 }
 
-void SCIClient::Impl::Proc(long long intervalOfTime)
+void SCISocket::Impl::Proc(long long intervalOfTime)
 {
     int count = 0;
     while (true)
@@ -142,28 +142,28 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
 
 //-------------------------------------------------------------------------------------------------
 
-SCIClient::SCIClient()
-    : mImpl(new SCIClient::Impl)
+SCISocket::SCISocket()
+    : mImpl(new SCISocket::Impl)
 {
 
 }
 
-SCIClient::~SCIClient()
+SCISocket::~SCISocket()
 {
 
 }
 
-bool SCIClient::Connect(const int port, const char* address)
+bool SCISocket::Connect(const int port, const char* address)
 {
     return mImpl->Connect(port, address);
 }
 
-bool SCIClient::Disconnect()
+bool SCISocket::Disconnect()
 {
     return mImpl->Disconnect();
 }
 
-int SCIClient::Send(const char* buffer, const size_t bufferSize)
+int SCISocket::Send(const char* buffer, const size_t bufferSize)
 {
     return mImpl->Send(buffer, bufferSize);
 }
