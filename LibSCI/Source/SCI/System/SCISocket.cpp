@@ -117,29 +117,6 @@ int SCISocket::Impl::GetLastError() const
     return WSAGetLastError();
 }
 
-void SCISocket::Impl::Proc(long long intervalOfTime)
-{
-    int count = 0;
-    while (true)
-    {
-        ++count;
-        std::this_thread::sleep_for(std::chrono::milliseconds(intervalOfTime));
-        std::cout << count << std::endl;
-
-        char send_buffer[64] = { "hello"};
-        if (int len = send(mSocket, send_buffer, static_cast<int>(strlen(send_buffer)) + 1, 0) > 0)
-        {
-            std::cout << len << std::endl;
-        }
-
-        if (mStatus == TRY_DISCONNECT)
-        {
-            mStatus = DISCONNECTED;
-            break;
-        }
-    }
-}
-
 //-------------------------------------------------------------------------------------------------
 
 SCISocket::SCISocket()
