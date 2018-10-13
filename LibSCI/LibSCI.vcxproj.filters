@@ -27,6 +27,12 @@
     <Filter Include="Source\SCI\Server">
       <UniqueIdentifier>{9d52cae9-8347-48ff-8c5e-7dabeddae55f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Include\SCI\System">
+      <UniqueIdentifier>{a961fd42-3a3f-4f16-adfc-3bd00f04205f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\SCI\System">
+      <UniqueIdentifier>{a84b3698-28a6-4d75-a05e-451f522811ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -41,6 +47,21 @@
     <ClInclude Include="Include\SCI\SCI.h">
       <Filter>Include\SCI</Filter>
     </ClInclude>
+    <ClInclude Include="Include\SCI\System\SCISocket.h">
+      <Filter>Include\SCI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SCI\System\SCIUtility.h">
+      <Filter>Include\SCI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SCI\System\SCIConnecter.h">
+      <Filter>Include\SCI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SCI\System\SCIDefine.h">
+      <Filter>Include\SCI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Precompiled.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SCI\SCI.cpp">
@@ -51,6 +72,15 @@
     </ClCompile>
     <ClCompile Include="Source\SCI\Server\SCIServer.cpp">
       <Filter>Source\SCI\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SCI\System\SCISocket.cpp">
+      <Filter>Source\SCI\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SCI\System\SCIUtility.cpp">
+      <Filter>Source\SCI\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SCI\System\SCIConnecter.cpp">
+      <Filter>Source\SCI\System</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

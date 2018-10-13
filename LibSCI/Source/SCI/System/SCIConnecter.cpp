@@ -7,14 +7,14 @@
 #include <string>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <SCI/Client/SCIClient.h>
+#include <SCI/System/SCIDefine.h>
+#include <SCI/System/SCIConnecter.h>
 
-namespace sci
-{
+NS_SCI_SYS_BEGIN
 
 static const long long INTERVAL_OF_TIME_MILLISECONDS = 1000;
 
-class SCIClient::Impl
+class SCIConnecter::Impl
 {
 public:
     enum ConnectionStatus : uint32_t
@@ -42,19 +42,19 @@ private:
     SOCKET mSocket;
 };
 
-SCIClient::Impl::Impl()
+SCIConnecter::Impl::Impl()
     : mStatus(ConnectionStatus::NONE)
     , mSocket(INVALID_SOCKET)
 {
 
 }
 
-SCIClient::Impl::~Impl()
+SCIConnecter::Impl::~Impl()
 {
     Disconnect();
 }
 
-bool SCIClient::Impl::Connect(const int port, const char* address)
+bool SCIConnecter::Impl::Connect(const int port, const char* address)
 {
     mStatus = ConnectionStatus::TRY_CONNECT;
 
@@ -78,7 +78,7 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
         return false;
     }
 
-    std::thread th(&SCIClient::Impl::Proc, this, INTERVAL_OF_TIME_MILLISECONDS);
+    std::thread th(&SCIConnecter::Impl::Proc, this, INTERVAL_OF_TIME_MILLISECONDS);
 
     if (!th.joinable())
     {
@@ -92,7 +92,7 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
     return true;
 }
 
-bool SCIClient::Impl::Disconnect()
+bool SCIConnecter::Impl::Disconnect()
 {
     if (mSocket == INVALID_SOCKET)
     {
@@ -102,25 +102,26 @@ bool SCIClient::Impl::Disconnect()
     {
         closesocket(mSocket);
     }
+
     return true;
 }
 
-int SCIClient::Impl::Send(const char* buffer, const size_t bufferSize)
+int SCIConnecter::Impl::Send(const char* buffer, const size_t bufferSize)
 {
     return send(mSocket, buffer, static_cast<int>(bufferSize), 0);
 }
 
-SCIClient::Impl::ConnectionStatus SCIClient::Impl::GetStatus() const
+SCIConnecter::Impl::ConnectionStatus SCIConnecter::Impl::GetStatus() const
 {
     return mStatus;
 }
 
-int SCIClient::Impl::GetLastError() const
+int SCIConnecter::Impl::GetLastError() const
 {
     return WSAGetLastError();
 }
 
-void SCIClient::Impl::Proc(long long intervalOfTime)
+void SCIConnecter::Impl::Proc(long long intervalOfTime)
 {
     int count = 0;
     while (true)
@@ -145,30 +146,30 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
 
 //-------------------------------------------------------------------------------------------------
 
-SCIClient::SCIClient()
-    : mImpl(new SCIClient::Impl)
+SCIConnecter::SCIConnecter()
+    : mImpl(new SCIConnecter::Impl)
 {
 
 }
 
-SCIClient::~SCIClient()
+SCIConnecter::~SCIConnecter()
 {
 
 }
 
-bool SCIClient::Connect(const int port, const char* address)
+bool SCIConnecter::Connect(const int port, const char* address)
 {
     return mImpl->Connect(port, address);
 }
 
-bool SCIClient::Disconnect()
+bool SCIConnecter::Disconnect()
 {
     return mImpl->Disconnect();
 }
 
-int SCIClient::Send(const char* buffer, const size_t bufferSize)
+int SCIConnecter::Send(const char* buffer, const size_t bufferSize)
 {
     return mImpl->Send(buffer, bufferSize);
 }
 
-}; // namespace sci
+NS_SCI_SYS_END

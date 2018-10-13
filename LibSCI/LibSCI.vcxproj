@@ -46,12 +46,12 @@
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -63,13 +63,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -84,14 +84,22 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Precompiled.h" />
     <ClInclude Include="Include\SCI\Client\SCIClient.h" />
     <ClInclude Include="Include\SCI\SCI.h" />
     <ClInclude Include="Include\SCI\Server\SCIServer.h" />
+    <ClInclude Include="Include\SCI\System\SCIConnecter.h" />
+    <ClInclude Include="Include\SCI\System\SCIDefine.h" />
+    <ClInclude Include="Include\SCI\System\SCISocket.h" />
+    <ClInclude Include="Include\SCI\System\SCIUtility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SCI\Client\SCIClient.cpp" />
     <ClCompile Include="Source\SCI\SCI.cpp" />
     <ClCompile Include="Source\SCI\Server\SCIServer.cpp" />
+    <ClCompile Include="Source\SCI\System\SCIConnecter.cpp" />
+    <ClCompile Include="Source\SCI\System\SCISocket.cpp" />
+    <ClCompile Include="Source\SCI\System\SCIUtility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

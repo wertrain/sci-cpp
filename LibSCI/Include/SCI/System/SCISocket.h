@@ -2,8 +2,9 @@
 
 #include<memory>
 
-namespace sci
-{
+namespace sci {
+
+namespace sys {
 
 /// ソケットを表すクラス
 class SCISocket
@@ -11,14 +12,13 @@ class SCISocket
 public:
     SCISocket();
     ~SCISocket();
-
-    bool Connect(const int port, const char* address);
-    bool Disconnect();
-    int Send(const char* buffer, const size_t bufferSize);
-
+    bool Create();
+    void Destroy();
 private:
     class Impl;
     std::unique_ptr<Impl> mImpl;
 };
+
+}; // namespace sys
 
 }; // namespace sci

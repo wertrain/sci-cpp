@@ -1,3 +1,5 @@
+#include <Precompiled.h>
+
 #include <thread>
 #include <iostream>
 #include <string>
