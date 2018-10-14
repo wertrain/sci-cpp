@@ -1,15 +1,13 @@
+/**
+ * @file SCIUtility.h
+ * @brief ユーティリティ
+ */
 #pragma once
 
-#include<memory>
+#include <memory>
 
-namespace sci
-{
-
-namespace ut
-{
+NS_SCI_UT_BEGIN
 
 void logging(const char* format, ...);
 
-}; // namespace ut
-
-}; // namespace sci
+NS_SCI_UT_END

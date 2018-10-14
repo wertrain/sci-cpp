@@ -1,3 +1,7 @@
+/**
+ * @file SCIServer.cpp
+ * @brief サーバを表すクラス
+ */
 #include <Precompiled.h>
 
 #include <thread>

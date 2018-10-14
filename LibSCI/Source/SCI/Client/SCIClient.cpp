@@ -1,3 +1,7 @@
+/**
+ * @file SCIClient.cpp
+ * @brief クライアントを表すクラス
+ */
 #include <Precompiled.h>
 
 #include <stdint.h>

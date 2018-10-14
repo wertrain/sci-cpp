@@ -1,6 +1,10 @@
+/**
+ * @file SCIConnecter.h
+ * @brief Ú‘±‚ğ•\‚·ƒNƒ‰ƒX
+ */
 #pragma once
 
-#include<memory>
+#include <memory>
 
 NS_SCI_SYS_BEGIN
 

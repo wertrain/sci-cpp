@@ -1,3 +1,7 @@
+/**
+ * @file SCIClient.h
+ * @brief クライアントを表すクラス
+ */
 #pragma once
 
 #include<memory>

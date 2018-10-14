@@ -1,3 +1,7 @@
+/**
+ * @file SCI.h
+ * @brief ライブラリ共通
+ */
 #pragma once
 
 #include <SCI/Client/SCIClient.h>
@@ -5,10 +9,8 @@
 
 namespace sci
 {
-
-/// 
-bool SCIInitialize();
-/// 
-void SCIFinalize();
-
-}; // namespace sci
+    /// ライブラリを初期化
+    bool SCIInitialize();
+    /// ライブラリを終了
+    void SCIFinalize();
+}

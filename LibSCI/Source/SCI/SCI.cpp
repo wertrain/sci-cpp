@@ -1,3 +1,7 @@
+/**
+ * @file SCI.cpp
+ * @brief ƒ‰ƒCƒuƒ‰ƒŠ‹¤’Ê
+ */
 #include <Precompiled.h>
 
 #include <winsock2.h>
@@ -16,10 +20,10 @@ bool SCIInitialize()
     }
     return true;
 }
- 
+
 void SCIFinalize()
 {
     WSACleanup();
 }
 
-}; // namespace sci
+}

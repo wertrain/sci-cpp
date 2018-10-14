@@ -1,3 +1,7 @@
+/**
+ * @file SCISocket.cpp
+ * @brief ソケットを表すクラス
+ */
 #include <Precompiled.h>
 
 #include <stdint.h>
@@ -6,11 +10,7 @@
 #include <SCI/System/SCIUtility.h>
 #include <SCI/System/SCISocket.h>
 
-namespace sci
-{
-
-namespace sys
-{
+NS_SCI_SYS_BEGIN
 
 class SCISocket::Impl
 {
@@ -78,6 +78,4 @@ void SCISocket::Destroy()
     mImpl->Destroy();
 }
 
-}; // namespace sys
-
-}; // namespace sci
+NS_SCI_SYS_END

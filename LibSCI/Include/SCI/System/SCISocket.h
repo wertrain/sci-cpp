@@ -1,10 +1,12 @@
+/**
+ * @file SCISocket.h
+ * @brief ソケットを表すクラス
+ */
 #pragma once
 
-#include<memory>
+#include <memory>
 
-namespace sci {
-
-namespace sys {
+NS_SCI_SYS_BEGIN
 
 /// ソケットを表すクラス
 class SCISocket
@@ -19,6 +21,4 @@ private:
     std::unique_ptr<Impl> mImpl;
 };
 
-}; // namespace sys
-
-}; // namespace sci
+NS_SCI_SYS_END

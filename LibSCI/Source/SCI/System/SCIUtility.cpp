@@ -1,3 +1,7 @@
+/**
+ * @file SCIUtility.cpp
+ * @brief ユーティリティ
+ */
 #include <Precompiled.h>
 #include <stdarg.h>
 
@@ -6,11 +10,7 @@
 #endif // _WIN64
 #include <SCI/System/SCIUtility.h>
 
-namespace sci
-{
-
-namespace ut
-{
+NS_SCI_UT_BEGIN
 
 void logging(const char* format, ...)
 {
@@ -28,6 +28,4 @@ void logging(const char* format, ...)
 #endif // _WIN64
 }
 
-}; // namespace ut
-
-}; // namespace sci
+NS_SCI_UT_END

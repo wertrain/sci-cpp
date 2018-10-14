@@ -1,3 +1,7 @@
+/**
+ * @file SCIServer.h
+ * @brief サーバを表すクラス
+ */
 #pragma once
 
 #include<memory>

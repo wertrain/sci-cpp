@@ -1,3 +1,7 @@
+/**
+ * @file SCIConnecter.cpp
+ * @brief ê⁄ë±Çï\Ç∑ÉNÉâÉX
+ */
 #include <Precompiled.h>
 
 #include <stdint.h>
@@ -7,7 +11,7 @@
 #include <string>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <SCI/System/SCIDefine.h>
+#include <SCI/System/SCIUtility.h>
 #include <SCI/System/SCIConnecter.h>
 
 NS_SCI_SYS_BEGIN
@@ -31,6 +35,7 @@ public:
     Impl();
     ~Impl();
     bool Connect(const int port, const char* address);
+    bool Listen(const int port, const char* address);
     bool Disconnect();
     void Proc(long long intervalOfTime);
     int Send(const char* buffer, const size_t bufferSize);
@@ -61,7 +66,7 @@ bool SCIConnecter::Impl::Connect(const int port, const char* address)
     mSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (mSocket == INVALID_SOCKET)
     {
-        std::cout << "socket failure. (" << WSAGetLastError() << ")" << std::endl;
+        sci::ut::logging("socket failure. (%u)\n", WSAGetLastError());
         return false;
     }
 
@@ -74,7 +79,52 @@ bool SCIConnecter::Impl::Connect(const int port, const char* address)
 
     if (connect(mSocket, (struct sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
     {
-        std::cout << "socket connect error. (" << WSAGetLastError() << ")" << std::endl;
+        sci::ut::logging("socket connect failure. (%u)\n", WSAGetLastError());
+        return false;
+    }
+
+    std::thread th(&SCIConnecter::Impl::Proc, this, INTERVAL_OF_TIME_MILLISECONDS);
+
+    if (!th.joinable())
+    {
+        return false;
+    }
+
+    th.join();
+
+    mStatus = ConnectionStatus::CONNECTED;
+
+    return true;
+}
+
+bool SCIConnecter::Impl::Listen(const int port, const char* address)
+{
+    mStatus = ConnectionStatus::TRY_CONNECT;
+
+    mSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (mSocket == INVALID_SOCKET)
+    {
+        sci::ut::logging("socket failure. (%u)\n", WSAGetLastError());
+        return false;
+    }
+    struct sockaddr_in addr = { 0 };
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    // inet_addr() ÇÃåxçêÇÃëŒèà
+    // https://qiita.com/parallax_kk/items/9e877542fecb4087729f
+    InetPtonA(addr.sin_family, address, &addr.sin_addr.S_un.S_addr);
+
+    if (int error = bind(mSocket, (struct sockaddr *)&addr, sizeof(addr)))
+    {
+        sci::ut::logging("socket bind failure. (%u)\n", WSAGetLastError());
+        return false;
+    }
+
+    const int backlog = 1;
+    if (int error = listen(mSocket, backlog))
+    {
+        sci::ut::logging("socket listen failure. (%u)\n", WSAGetLastError());
         return false;
     }
 
