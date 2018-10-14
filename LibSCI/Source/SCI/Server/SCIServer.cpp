@@ -20,17 +20,6 @@ static const long long INTERVAL_OF_TIME_MILLISECONDS = 1000;
 class SCIServer::Impl
 {
 public:
-    enum ConnectionStatus : uint32_t
-    {
-        NONE = 0,
-        IDLE,
-        TRY_CONNECT,
-        CONNECTED,
-        TRY_DISCONNECT,
-        DISCONNECTED
-    };
-
-public:
     Impl();
     ~Impl();
     bool Connect(const int port, const char* address);
@@ -38,13 +27,13 @@ public:
     void Proc(long long intervalOfTime);
 
 private:
-    ConnectionStatus mStatus;
     SOCKET mSocket;
+    int32_t mClientCount;
 };
 
 SCIServer::Impl::Impl()
-    : mStatus(ConnectionStatus::NONE)
-    , mSocket(INVALID_SOCKET)
+    : mSocket(INVALID_SOCKET)
+    , mClientCount(0)
 {
 
 }
@@ -56,8 +45,6 @@ SCIServer::Impl::~Impl()
 
 bool SCIServer::Impl::Connect(const int port, const char* address)
 {
-    mStatus = ConnectionStatus::TRY_CONNECT;
-
     mSocket = socket(PF_INET, SOCK_STREAM, 0);
     if (mSocket == INVALID_SOCKET)
     {
@@ -93,8 +80,6 @@ bool SCIServer::Impl::Connect(const int port, const char* address)
     }
 
     th.join();
-
-    mStatus = ConnectionStatus::CONNECTED;
 
     return true;
 }
