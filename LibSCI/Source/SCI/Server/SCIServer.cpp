@@ -9,6 +9,8 @@
 #include <string>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <algorithm>
+#include <array>
 
 #include <SCI/Server/SCIServer.h>
 
@@ -27,13 +29,31 @@ public:
     void Proc(long long intervalOfTime);
 
 private:
+    struct Client
+    {
+    private:
+        struct sockaddr_in in;
+        SOCKET socket;
+    public:
+        Client::Client()
+            : in()
+            , socket(INVALID_SOCKET)
+        {
+
+        }
+    };
+    static const size_t MAX_CLIENT_NUM = 8;
+
+private:
     SOCKET mSocket;
     int32_t mClientCount;
+    std::array<Client, MAX_CLIENT_NUM> mClientList;
 };
 
 SCIServer::Impl::Impl()
     : mSocket(INVALID_SOCKET)
     , mClientCount(0)
+    , mClientList()
 {
 
 }
@@ -107,6 +127,8 @@ void SCIServer::Impl::Proc(long long intervalOfTime)
     {
         std::cout << "wait connection. please start client." << std::endl;
         SOCKET sockclient = accept(mSocket, (struct sockaddr *)&client, &len);
+        ++mClientCount;
+
         printf("%s ‚©‚çÚ‘±‚ðŽó‚¯‚Ü‚µ‚½\n", inet_ntoa(client.sin_addr));
 
         char buffer[1024];
