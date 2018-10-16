@@ -10,7 +10,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <algorithm>
-#include <array>
+#include <vector>
 
 #include <SCI/Server/SCIServer.h>
 
@@ -31,23 +31,28 @@ public:
 private:
     struct Client
     {
-    private:
-        struct sockaddr_in in;
-        SOCKET socket;
     public:
         Client::Client()
-            : in()
-            , socket(INVALID_SOCKET)
+            : mAddr()
+            , mSocket(INVALID_SOCKET)
         {
 
         }
+        const struct sockaddr_in& GetSockAddrIn() { return mAddr; }
+        const SOCKET& GetSocket() { return mSocket; }
+        void SetSockAddrIn(struct sockaddr_in addr) { mAddr = addr; }
+        void SetSocket(SOCKET socket) { mSocket = socket; }
+
+    private:
+        struct sockaddr_in mAddr;
+        SOCKET mSocket;
     };
     static const size_t MAX_CLIENT_NUM = 8;
 
 private:
     SOCKET mSocket;
     int32_t mClientCount;
-    std::array<Client, MAX_CLIENT_NUM> mClientList;
+    std::vector<Client*> mClientList;
 };
 
 SCIServer::Impl::Impl()
@@ -120,16 +125,20 @@ bool SCIServer::Impl::Disconnect()
 
 void SCIServer::Impl::Proc(long long intervalOfTime)
 {
-    struct sockaddr_in client;
-    int len = sizeof(client);
-
     while (true)
     {
-        std::cout << "wait connection. please start client." << std::endl;
-        SOCKET sockclient = accept(mSocket, (struct sockaddr *)&client, &len);
-        ++mClientCount;
+        struct sockaddr_in addr;
+        int len = sizeof(addr);
 
-        printf("%s ‚©‚çÚ‘±‚ðŽó‚¯‚Ü‚µ‚½\n", inet_ntoa(client.sin_addr));
+        std::cout << "wait connection. please start client." << std::endl;
+        SOCKET sockclient = accept(mSocket, (struct sockaddr *)&addr, &len);
+
+        Client* client = new Client();
+        client->SetSockAddrIn(addr);
+        client->SetSocket(sockclient);
+        mClientList.push_back(client);
+
+        printf("%s ‚©‚çÚ‘±‚ðŽó‚¯‚Ü‚µ‚½\n", inet_ntoa(addr.sin_addr));
 
         char buffer[1024];
         if (recv(sockclient, buffer, sizeof(buffer), 0) > 0)
