@@ -33,7 +33,7 @@ private:
     {
     public:
         Client::Client()
-            : mAddr()
+            : mAddr({0})
             , mSocket(INVALID_SOCKET)
         {
 
