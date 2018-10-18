@@ -127,7 +127,7 @@ void SCIServer::Impl::Proc(long long intervalOfTime)
 {
     while (true)
     {
-        struct sockaddr_in addr;
+        struct sockaddr_in addr = { 0 };
         int len = sizeof(addr);
 
         std::cout << "wait connection. please start client." << std::endl;
