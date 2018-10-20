@@ -29,11 +29,12 @@ public:
     void Proc(long long intervalOfTime);
 
 private:
-    struct Client
+    struct Process
     {
     public:
-        Client::Client()
-            : mAddr({0})
+        Process::Process()
+            : mThread()
+            , mAddr({0})
             , mSocket(INVALID_SOCKET)
         {
 
@@ -42,8 +43,10 @@ private:
         const SOCKET& GetSocket() { return mSocket; }
         void SetSockAddrIn(struct sockaddr_in addr) { mAddr = addr; }
         void SetSocket(SOCKET socket) { mSocket = socket; }
-
+        void SetThread(std::thread* thread) { mThread = thread; }
+        std::thread* GetThread() { return mThread; }
     private:
+        std::thread* mThread;
         struct sockaddr_in mAddr;
         SOCKET mSocket;
     };
@@ -52,13 +55,13 @@ private:
 private:
     SOCKET mSocket;
     int32_t mClientCount;
-    std::vector<Client*> mClientList;
+    std::vector<Process*> mProcessList;
 };
 
 SCIServer::Impl::Impl()
     : mSocket(INVALID_SOCKET)
     , mClientCount(0)
-    , mClientList()
+    , mProcessList()
 {
 
 }
@@ -97,14 +100,17 @@ bool SCIServer::Impl::Connect(const int port, const char* address)
         return false;
     }
 
-    std::thread th(&SCIServer::Impl::Proc, this, INTERVAL_OF_TIME_MILLISECONDS);
+    // ç≈èâÇÃÉvÉçÉZÉXÇçÏê¨
+    auto thread = new std::thread(&SCIServer::Impl::Proc, this, INTERVAL_OF_TIME_MILLISECONDS);
+    Process* process = new Process();
+    process->SetThread(thread);
 
-    if (!th.joinable())
+    if (!thread->joinable())
     {
         return false;
     }
 
-    th.join();
+    thread->join();
 
     return true;
 }
@@ -133,10 +139,7 @@ void SCIServer::Impl::Proc(long long intervalOfTime)
         std::cout << "wait connection. please start client." << std::endl;
         SOCKET sockclient = accept(mSocket, (struct sockaddr *)&addr, &len);
 
-        Client* client = new Client();
-        client->SetSockAddrIn(addr);
-        client->SetSocket(sockclient);
-        mClientList.push_back(client);
+
 
         printf("%s Ç©ÇÁê⁄ë±ÇéÛÇØÇ‹ÇµÇΩ\n", inet_ntoa(addr.sin_addr));
 
