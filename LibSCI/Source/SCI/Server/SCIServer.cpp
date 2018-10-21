@@ -11,7 +11,7 @@
 #include <ws2tcpip.h>
 #include <algorithm>
 #include <vector>
-
+#include <SCI/System/SCIUtility.h>
 #include <SCI/Server/SCIServer.h>
 
 namespace sci
@@ -29,23 +29,16 @@ public:
     Process::Process(const long long intervalTime)
         : mThread()
         , mIntervalTime(intervalTime)
-        , mAddr({ 0 })
-        , mSocket(INVALID_SOCKET)
     {
 
     }
-    const struct sockaddr_in& GetSockAddrIn() { return mAddr; }
-    const SOCKET& GetSocket() { return mSocket; }
-    void SetSockAddrIn(struct sockaddr_in addr) { mAddr = addr; }
-    void SetSocket(SOCKET socket) { mSocket = socket; }
     void SetThread(std::thread* thread) { mThread = thread; }
     std::thread* GetThread() { return mThread; }
     long long GetIntervalTime() { return mIntervalTime; }
+
 private:
     std::thread* mThread;
     long long mIntervalTime;
-    struct sockaddr_in mAddr;
-    SOCKET mSocket;
 };
 
 /// サーバ実装クラス
@@ -59,14 +52,15 @@ public:
     void Proc(Process* process);
 
 private:
+    bool createNewProcess();
+
+private:
     SOCKET mSocket;
-    int32_t mClientCount;
     std::vector<Process*> mProcessList;
 };
 
 SCIServer::Impl::Impl()
     : mSocket(INVALID_SOCKET)
-    , mClientCount(0)
     , mProcessList()
 {
 
@@ -75,6 +69,26 @@ SCIServer::Impl::Impl()
 SCIServer::Impl::~Impl()
 {
     Disconnect();
+}
+
+bool SCIServer::Impl::createNewProcess()
+{
+    Process* process = new Process(INTERVAL_OF_TIME_MILLISECONDS);
+    auto thread = new std::thread(&SCIServer::Impl::Proc, this, process);
+    process->SetThread(thread);
+
+    if (!thread->joinable())
+    {
+        delete thread;
+        delete process;
+        return false;
+    }
+
+    thread->join();
+
+    mProcessList.push_back(process);
+
+    return true;
 }
 
 bool SCIServer::Impl::Connect(const int port, const char* address)
@@ -95,29 +109,19 @@ bool SCIServer::Impl::Connect(const int port, const char* address)
 
     if (int error = bind(mSocket, (struct sockaddr *)&addr, sizeof(addr)))
     {
-        std::cout << "socket bind error. (" << WSAGetLastError() << ")" << std::endl;
+        ut::error("socket bind error. (%d)\n", WSAGetLastError());
         return false;
     }
 
     const int backlog = 1;
     if (int error = listen(mSocket, backlog))
     {
-        std::cout << "socket listen error. (" << WSAGetLastError() << ")" << std::endl;
+        ut::error("socket listen error. (%d)\n", WSAGetLastError());
         return false;
     }
 
     // 最初のプロセスを作成
-    Process* process = new Process(INTERVAL_OF_TIME_MILLISECONDS);
-    auto thread = new std::thread(&SCIServer::Impl::Proc, this, process);
-    process->SetThread(thread);
-
-
-    if (!thread->joinable())
-    {
-        return false;
-    }
-
-    thread->join();
+    createNewProcess();
 
     return true;
 }
@@ -133,30 +137,41 @@ bool SCIServer::Impl::Disconnect()
         closesocket(mSocket);
     }
 
+    for each(auto process in mProcessList)
+    {
+        std::thread* thread = process->GetThread();
+        delete thread;
+        delete process;
+    }
+    mProcessList.clear();
+
     return true;
 }
 
 void SCIServer::Impl::Proc(Process* process)
 {
+    // 接続を待機する
+    struct sockaddr_in addr = { 0 };
+    int len = sizeof(addr);
+
+    ut::logging("wait connection. please start client.\n");
+    SOCKET sockclient = accept(mSocket, (struct sockaddr *)&addr, &len);
+
+    // 次の接続待ちを開始
+    createNewProcess();
+
+    // 受信ループ
     while (true)
     {
-        struct sockaddr_in addr = { 0 };
-        int len = sizeof(addr);
-
-        std::cout << "wait connection. please start client." << std::endl;
-        SOCKET sockclient = accept(mSocket, (struct sockaddr *)&addr, &len);
-
-
-
-        printf("%s から接続を受けました\n", inet_ntoa(addr.sin_addr));
-
         char buffer[1024];
         if (recv(sockclient, buffer, sizeof(buffer), 0) > 0)
         {
-            std::cout << buffer << std::endl;
+            ut::logging("%s\n", buffer);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(process->GetIntervalTime()));
     }
+
+    closesocket(sockclient);
 }
 
 //-------------------------------------------------------------------------------------------------
