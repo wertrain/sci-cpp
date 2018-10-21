@@ -17,8 +17,38 @@
 namespace sci
 {
 
+/// クライアント最大接続数
+static const size_t MAX_CLIENT_NUM = 8;
+/// スレッド待機時間
 static const long long INTERVAL_OF_TIME_MILLISECONDS = 1000;
 
+/// プロセスを表すクラス
+struct Process
+{
+public:
+    Process::Process(const long long intervalTime)
+        : mThread()
+        , mIntervalTime(intervalTime)
+        , mAddr({ 0 })
+        , mSocket(INVALID_SOCKET)
+    {
+
+    }
+    const struct sockaddr_in& GetSockAddrIn() { return mAddr; }
+    const SOCKET& GetSocket() { return mSocket; }
+    void SetSockAddrIn(struct sockaddr_in addr) { mAddr = addr; }
+    void SetSocket(SOCKET socket) { mSocket = socket; }
+    void SetThread(std::thread* thread) { mThread = thread; }
+    std::thread* GetThread() { return mThread; }
+    long long GetIntervalTime() { return mIntervalTime; }
+private:
+    std::thread* mThread;
+    long long mIntervalTime;
+    struct sockaddr_in mAddr;
+    SOCKET mSocket;
+};
+
+/// サーバ実装クラス
 class SCIServer::Impl
 {
 public:
@@ -26,31 +56,7 @@ public:
     ~Impl();
     bool Connect(const int port, const char* address);
     bool Disconnect();
-    void Proc(long long intervalOfTime);
-
-private:
-    struct Process
-    {
-    public:
-        Process::Process()
-            : mThread()
-            , mAddr({0})
-            , mSocket(INVALID_SOCKET)
-        {
-
-        }
-        const struct sockaddr_in& GetSockAddrIn() { return mAddr; }
-        const SOCKET& GetSocket() { return mSocket; }
-        void SetSockAddrIn(struct sockaddr_in addr) { mAddr = addr; }
-        void SetSocket(SOCKET socket) { mSocket = socket; }
-        void SetThread(std::thread* thread) { mThread = thread; }
-        std::thread* GetThread() { return mThread; }
-    private:
-        std::thread* mThread;
-        struct sockaddr_in mAddr;
-        SOCKET mSocket;
-    };
-    static const size_t MAX_CLIENT_NUM = 8;
+    void Proc(Process* process);
 
 private:
     SOCKET mSocket;
@@ -101,9 +107,10 @@ bool SCIServer::Impl::Connect(const int port, const char* address)
     }
 
     // 最初のプロセスを作成
-    auto thread = new std::thread(&SCIServer::Impl::Proc, this, INTERVAL_OF_TIME_MILLISECONDS);
-    Process* process = new Process();
+    Process* process = new Process(INTERVAL_OF_TIME_MILLISECONDS);
+    auto thread = new std::thread(&SCIServer::Impl::Proc, this, process);
     process->SetThread(thread);
+
 
     if (!thread->joinable())
     {
@@ -129,7 +136,7 @@ bool SCIServer::Impl::Disconnect()
     return true;
 }
 
-void SCIServer::Impl::Proc(long long intervalOfTime)
+void SCIServer::Impl::Proc(Process* process)
 {
     while (true)
     {
@@ -148,7 +155,7 @@ void SCIServer::Impl::Proc(long long intervalOfTime)
         {
             std::cout << buffer << std::endl;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(intervalOfTime));
+        std::this_thread::sleep_for(std::chrono::milliseconds(process->GetIntervalTime()));
     }
 }
 
