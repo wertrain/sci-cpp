@@ -5,7 +5,6 @@
 #include <Precompiled.h>
 
 #include <thread>
-#include <iostream>
 #include <string>
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -96,7 +95,7 @@ bool SCIServer::Impl::Connect(const int port, const char* address)
     mSocket = socket(PF_INET, SOCK_STREAM, 0);
     if (mSocket == INVALID_SOCKET)
     {
-        std::cout << "socket failure. (" << WSAGetLastError() << ")" << std::endl;
+        ut::error("socket failure. (%d)\n", WSAGetLastError());
         return false;
     }
     struct sockaddr_in addr = { 0 };
