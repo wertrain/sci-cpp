@@ -7,10 +7,10 @@
 #include <stdint.h>
 #include <thread>
 
-#include <iostream>
 #include <string>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <SCI/System/SCIUtility.h>
 #include <SCI/Client/SCIClient.h>
 
 namespace sci
@@ -65,7 +65,7 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
     mSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (mSocket == INVALID_SOCKET)
     {
-        std::cout << "socket failure. (" << WSAGetLastError() << ")" << std::endl;
+        ut::error("socket failure. (%d)\n", WSAGetLastError());
         return false;
     }
 
@@ -78,7 +78,7 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
 
     if (connect(mSocket, (struct sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
     {
-        std::cout << "socket connect error. (" << WSAGetLastError() << ")" << std::endl;
+        ut::error("socket connect error. (%d)\n", WSAGetLastError());
         return false;
     }
 
@@ -131,12 +131,12 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
     {
         ++count;
         std::this_thread::sleep_for(std::chrono::milliseconds(intervalOfTime));
-        std::cout << count << std::endl;
+        ut::logging("%d\n", count);
 
         char send_buffer[64] = { "hello"};
         if (int len = send(mSocket, send_buffer, static_cast<int>(strlen(send_buffer)) + 1, 0) > 0)
         {
-            std::cout << len << std::endl;
+            ut::logging("%d\n", len);
         }
 
         if (mStatus == TRY_DISCONNECT)
