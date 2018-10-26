@@ -88,17 +88,13 @@
     <ClInclude Include="Include\SCI\Client\SCIClient.h" />
     <ClInclude Include="Include\SCI\SCI.h" />
     <ClInclude Include="Include\SCI\Server\SCIServer.h" />
-    <ClInclude Include="Include\SCI\System\SCIConnecter.h" />
     <ClInclude Include="Include\SCI\System\SCIDefine.h" />
-    <ClInclude Include="Include\SCI\System\SCISocket.h" />
     <ClInclude Include="Include\SCI\System\SCIUtility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SCI\Client\SCIClient.cpp" />
     <ClCompile Include="Source\SCI\SCI.cpp" />
     <ClCompile Include="Source\SCI\Server\SCIServer.cpp" />
-    <ClCompile Include="Source\SCI\System\SCIConnecter.cpp" />
-    <ClCompile Include="Source\SCI\System\SCISocket.cpp" />
     <ClCompile Include="Source\SCI\System\SCIUtility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

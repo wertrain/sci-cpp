@@ -47,13 +47,7 @@
     <ClInclude Include="Include\SCI\SCI.h">
       <Filter>Include\SCI</Filter>
     </ClInclude>
-    <ClInclude Include="Include\SCI\System\SCISocket.h">
-      <Filter>Include\SCI\System</Filter>
-    </ClInclude>
     <ClInclude Include="Include\SCI\System\SCIUtility.h">
-      <Filter>Include\SCI\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\SCI\System\SCIConnecter.h">
       <Filter>Include\SCI\System</Filter>
     </ClInclude>
     <ClInclude Include="Include\SCI\System\SCIDefine.h">
@@ -73,13 +67,7 @@
     <ClCompile Include="Source\SCI\Server\SCIServer.cpp">
       <Filter>Source\SCI\Server</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SCI\System\SCISocket.cpp">
-      <Filter>Source\SCI\System</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SCI\System\SCIUtility.cpp">
-      <Filter>Source\SCI\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SCI\System\SCIConnecter.cpp">
       <Filter>Source\SCI\System</Filter>
     </ClCompile>
   </ItemGroup>
