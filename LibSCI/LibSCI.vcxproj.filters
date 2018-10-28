@@ -56,6 +56,9 @@
     <ClInclude Include="Include\Precompiled.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="Include\SCI\System\SCIPacket.h">
+      <Filter>Include\SCI\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SCI\SCI.cpp">
@@ -68,6 +71,9 @@
       <Filter>Source\SCI\Server</Filter>
     </ClCompile>
     <ClCompile Include="Source\SCI\System\SCIUtility.cpp">
+      <Filter>Source\SCI\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SCI\System\SCIPacket.cpp">
       <Filter>Source\SCI\System</Filter>
     </ClCompile>
   </ItemGroup>

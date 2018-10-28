@@ -4,4 +4,5 @@
  */
 #pragma once
 
+#include <stdint.h>
 #include <SCI/System/SCIDefine.h>

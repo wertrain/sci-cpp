@@ -21,34 +21,20 @@ static const long long INTERVAL_OF_TIME_MILLISECONDS = 1000;
 class SCIClient::Impl
 {
 public:
-    enum ConnectionStatus : uint32_t
-    {
-        NONE = 0,
-        IDLE,
-        TRY_CONNECT,
-        CONNECTED,
-        TRY_DISCONNECT,
-        DISCONNECTED
-    };
-
-public:
     Impl();
     ~Impl();
     bool Connect(const int port, const char* address);
     bool Disconnect();
     void Proc(long long intervalOfTime);
     int Send(const char* buffer, const size_t bufferSize);
-    ConnectionStatus GetStatus() const;
     int GetLastError() const;
 
 private:
-    ConnectionStatus mStatus;
     SOCKET mSocket;
 };
 
 SCIClient::Impl::Impl()
-    : mStatus(ConnectionStatus::NONE)
-    , mSocket(INVALID_SOCKET)
+    : mSocket(INVALID_SOCKET)
 {
 
 }
@@ -60,8 +46,6 @@ SCIClient::Impl::~Impl()
 
 bool SCIClient::Impl::Connect(const int port, const char* address)
 {
-    mStatus = ConnectionStatus::TRY_CONNECT;
-
     mSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (mSocket == INVALID_SOCKET)
     {
@@ -91,8 +75,6 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
 
     th.join();
 
-    mStatus = ConnectionStatus::CONNECTED;
-
     return true;
 }
 
@@ -114,11 +96,6 @@ int SCIClient::Impl::Send(const char* buffer, const size_t bufferSize)
     return send(mSocket, buffer, static_cast<int>(bufferSize), 0);
 }
 
-SCIClient::Impl::ConnectionStatus SCIClient::Impl::GetStatus() const
-{
-    return mStatus;
-}
-
 int SCIClient::Impl::GetLastError() const
 {
     return WSAGetLastError();
@@ -137,12 +114,6 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         if (int len = send(mSocket, send_buffer, static_cast<int>(strlen(send_buffer)) + 1, 0) > 0)
         {
             ut::logging("%d\n", len);
-        }
-
-        if (mStatus == TRY_DISCONNECT)
-        {
-            mStatus = DISCONNECTED;
-            break;
         }
     }
 }
