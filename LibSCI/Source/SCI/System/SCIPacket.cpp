@@ -8,8 +8,8 @@
 
 NS_SCI_SYS_BEGIN
 
-const int8_t SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN[3] = { 0xf, 0xe, 0xd };
-static_assert(sizeof(SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN) == sizeof(int8_t) * 3, "MAGIC_TOKEN");
+const int8_t SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN[2] = { 0xf, 0xe };
+static_assert(sizeof(SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN) == sizeof(int8_t) * 2, "MAGIC_TOKEN");
 
 SCIPacket::SCIPacket()
     : mRawData()
@@ -30,12 +30,16 @@ const SCIPacket::RawData& SCIPacket::GetData()
 void SCIPacket::Set(const RawDataHeader header)
 {
     mRawData.mHeader[0] = header;
-    ::memcpy(&mRawData.mHeader[1], RAWDATA_HEADER_MAGIC_TOKEN, sizeof(RAWDATA_HEADER_MAGIC_TOKEN));
+    ::memcpy(&mRawData.mHeader[2], RAWDATA_HEADER_MAGIC_TOKEN, sizeof(RAWDATA_HEADER_MAGIC_TOKEN));
 }
 
-void SCIPacket::Set(const RawDataHeader header, const int8_t* body, const size_t bodySize)
+bool SCIPacket::Set(const RawDataHeader header, const int8_t* body, const size_t bodySize)
 {
-
+    if (bodySize > RAWDATA_BODY_SIZE) return false;
+    Set(header);
+    ::memcpy(mRawData.mBody, 0, RAWDATA_BODY_SIZE);
+    ::memcpy(mRawData.mBody, body, bodySize);
+    return true;
 }
 
 NS_SCI_SYS_END
