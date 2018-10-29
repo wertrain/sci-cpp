@@ -11,17 +11,25 @@ class SCIPacket
 public:
     enum RawDataHeader : int8_t
     {
-        READY,
+        READY = 0,
         DISCONNECT
     };
-    static const int8_t RAWDATA_HEADER_MAGIC_TOKEN[3];
+
+    enum RawDataHeaderFlag : int8_t
+    {
+        FLAG_NONE    = 0 << 0,
+        FLAG_CONNECT = 1 << 0,
+    };
 
 public:
+    static const size_t RAWDATA_BODY_SIZE = 256;
+    static const int8_t RAWDATA_HEADER_MAGIC_TOKEN[2];
+
     struct RawData
     {
         int8_t mHeader[4];
-        int8_t mBody[60];
-        int8_t mPadding[64];
+        int8_t mBody[RAWDATA_BODY_SIZE];
+        int8_t mPadding[4];
     };
 
 public:
@@ -30,7 +38,7 @@ public:
     const RawData& GetData();
 
     void Set(const RawDataHeader header);
-    void Set(const RawDataHeader header, const int8_t* body, const size_t bodySize);
+    bool Set(const RawDataHeader header, const int8_t* body, const size_t bodySize);
 
 private:
     RawData mRawData;

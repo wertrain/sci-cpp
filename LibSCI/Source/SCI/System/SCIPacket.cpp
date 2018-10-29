@@ -43,4 +43,3 @@ bool SCIPacket::Set(const RawDataHeader header, const int8_t* body, const size_t
 }
 
 NS_SCI_SYS_END
-
