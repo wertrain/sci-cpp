@@ -31,10 +31,14 @@ public:
 
 private:
     SOCKET mSocket;
+    const char* mBuffer;
+    const size_t mBufferSize;
 };
 
 SCIClient::Impl::Impl()
     : mSocket(INVALID_SOCKET)
+    , mBuffer(nullptr)
+    , mBufferSize(0)
 {
 
 }
@@ -110,7 +114,7 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         std::this_thread::sleep_for(std::chrono::milliseconds(intervalOfTime));
         ut::logging("%d\n", count);
 
-        char send_buffer[64] = { "hello"};
+        char send_buffer[64] = {"hello"};
         if (int len = send(mSocket, send_buffer, static_cast<int>(strlen(send_buffer)) + 1, 0) > 0)
         {
             ut::logging("%d\n", len);
