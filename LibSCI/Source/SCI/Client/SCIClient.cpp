@@ -7,7 +7,6 @@
 #include <stdint.h>
 #include <thread>
 
-#include <string>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <SCI/System/SCIUtility.h>
