@@ -30,7 +30,7 @@ const SCIPacket::RawData& SCIPacket::GetData()
 void SCIPacket::Set(const RawDataHeader header)
 {
     mRawData.mHeader[0] = header;
-    ::memcpy(&mRawData.mHeader[2], RAWDATA_HEADER_MAGIC_TOKEN, sizeof(RAWDATA_HEADER_MAGIC_TOKEN));
+    ::memcpy(mRawData.mHeader + sizeof(SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN), RAWDATA_HEADER_MAGIC_TOKEN, sizeof(RAWDATA_HEADER_MAGIC_TOKEN));
 }
 
 bool SCIPacket::Set(const RawDataHeader header, const int8_t* body, const size_t bodySize)
