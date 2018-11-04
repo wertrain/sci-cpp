@@ -9,6 +9,7 @@
 #include <ws2tcpip.h>
 #include <algorithm>
 #include <vector>
+#include <SCI/System/SCIPacket.h>
 #include <SCI/System/SCIUtility.h>
 #include <SCI/Server/SCIServer.h>
 
@@ -159,17 +160,27 @@ void SCIServer::Impl::Proc(Process* process)
     createNewProcess();
 
     // ŽóMƒ‹[ƒv
-    while (true)
+    bool connected = true;
+    while (connected)
     {
         char buffer[1024];
-        if (recv(sockclient, buffer, sizeof(buffer), 0) > 0)
+        if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)
         {
-            ut::logging("%s\n", buffer);
+            sys::SCIPacket::RawData rawData;
+            memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
+            switch (rawData.mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX])
+            {
+            case sys::SCIPacket::DISCONNECT:
+                connected = false;
+                break;
+            }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(process->GetIntervalTime()));
     }
 
     closesocket(sockclient);
+
+    ut::logging("disconnected client.\n");
 }
 
 //-------------------------------------------------------------------------------------------------
