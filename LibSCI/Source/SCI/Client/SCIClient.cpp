@@ -9,6 +9,7 @@
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <SCI/System/SCIPacket.h>
 #include <SCI/System/SCIUtility.h>
 #include <SCI/Client/SCIClient.h>
 
@@ -107,7 +108,8 @@ int SCIClient::Impl::GetLastError() const
 void SCIClient::Impl::Proc(long long intervalOfTime)
 {
     int count = 0;
-    while (true)
+    bool connected = true;
+    while (connected)
     {
         ++count;
         std::this_thread::sleep_for(std::chrono::milliseconds(intervalOfTime));
@@ -122,7 +124,14 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         char buffer[1024];
         if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)
         {
-            ut::logging("%s\n", buffer);
+            sys::SCIPacket::RawData rawData;
+            memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
+            switch (rawData.mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX])
+            {
+            case sys::SCIPacket::DISCONNECT:
+                connected = false;
+                break;
+            }
         }
     }
 }
