@@ -23,6 +23,8 @@ public:
 
 public:
     static const size_t RAWDATA_BODY_SIZE = 256;
+    static const int RAWDATA_HEADER_INDEX = 0;
+    static const int RAWDATA_FLAG_INDEX = 1;
     static const int8_t RAWDATA_HEADER_MAGIC_TOKEN[2];
 
     struct RawData

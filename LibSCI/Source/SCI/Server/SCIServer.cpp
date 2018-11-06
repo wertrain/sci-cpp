@@ -51,6 +51,7 @@ public:
 
 private:
     bool createNewProcess();
+    void sendPacket(const sys::SCIPacket::RawDataHeader header);
 
 private:
     SOCKET mSocket;
@@ -87,6 +88,15 @@ bool SCIServer::Impl::createNewProcess()
     mProcessList.push_back(process);
 
     return true;
+}
+
+void SCIServer::Impl::sendPacket(const sys::SCIPacket::RawDataHeader header)
+{
+    char buffer[1024];
+    sys::SCIPacket::RawData rawData = { 0 };
+    rawData.mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX] = header;
+    memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
+    send(mSocket, buffer, sizeof(sys::SCIPacket::RawData), 0);
 }
 
 bool SCIServer::Impl::Connect(const int port, const char* address)
@@ -132,6 +142,7 @@ bool SCIServer::Impl::Disconnect()
     }
     else
     {
+        sendPacket(sys::SCIPacket::DISCONNECT);
         closesocket(mSocket);
     }
 
