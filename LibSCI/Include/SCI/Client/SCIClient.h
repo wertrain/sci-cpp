@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include<memory>
+#include <memory>
 
 namespace sci
 {

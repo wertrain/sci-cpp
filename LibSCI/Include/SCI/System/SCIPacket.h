@@ -46,4 +46,14 @@ private:
     RawData mRawData;
 };
 
+class SCIPacketSender
+{
+public:
+    SCIPacketSender();
+    virtual ~SCIPacketSender();
+
+private:
+    void send(SOCKET* socket, const sys::SCIPacket::RawDataHeader header);
+};
+
 NS_SCI_SYS_END

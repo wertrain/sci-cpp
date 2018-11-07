@@ -4,6 +4,8 @@
  */
 #include <Precompiled.h>
 #include <memory>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #include <SCI/System/SCIPacket.h>
 
 NS_SCI_SYS_BEGIN
@@ -40,6 +42,29 @@ bool SCIPacket::Set(const RawDataHeader header, const int8_t* body, const size_t
     ::memcpy(mRawData.mBody, 0, RAWDATA_BODY_SIZE);
     ::memcpy(mRawData.mBody, body, bodySize);
     return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+SCIPacketSender::SCIPacketSender()
+{
+
+}
+
+SCIPacketSender::~SCIPacketSender()
+{
+
+}
+
+void SCIPacketSender::send(SOCKET* socket, const sys::SCIPacket::RawDataHeader header)
+{
+    char buffer[32];
+    sys::SCIPacket packet;
+    packet.Set(header);
+
+    sys::SCIPacket::RawData rawData = packet.GetData();
+    memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
+    ::send(*socket, buffer, sizeof(sys::SCIPacket::RawData), 0);
 }
 
 NS_SCI_SYS_END
