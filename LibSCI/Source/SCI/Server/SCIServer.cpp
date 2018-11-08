@@ -40,7 +40,7 @@ private:
 };
 
 /// サーバ実装クラス
-class SCIServer::Impl
+class SCIServer::Impl : public sys::SCIPacketSender
 {
 public:
     Impl();
@@ -88,15 +88,6 @@ bool SCIServer::Impl::createNewProcess()
     mProcessList.push_back(process);
 
     return true;
-}
-
-void SCIServer::Impl::sendPacket(const sys::SCIPacket::RawDataHeader header)
-{
-    char buffer[1024];
-    sys::SCIPacket::RawData rawData = { 0 };
-    rawData.mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX] = header;
-    memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
-    send(mSocket, buffer, sizeof(sys::SCIPacket::RawData), 0);
 }
 
 bool SCIServer::Impl::Connect(const int port, const char* address)

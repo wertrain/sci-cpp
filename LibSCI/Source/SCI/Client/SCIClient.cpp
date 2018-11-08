@@ -18,7 +18,7 @@ namespace sci
 
 static const long long INTERVAL_OF_TIME_MILLISECONDS = 1000;
 
-class SCIClient::Impl
+class SCIClient::Impl : public sys::SCIPacketSender
 {
 public:
     Impl();
@@ -97,7 +97,7 @@ bool SCIClient::Impl::Disconnect()
 
 int SCIClient::Impl::Send(const char* buffer, const size_t bufferSize)
 {
-    return send(mSocket, buffer, static_cast<int>(bufferSize), 0);
+    return ::send(mSocket, buffer, static_cast<int>(bufferSize), 0);
 }
 
 int SCIClient::Impl::GetLastError() const
@@ -116,7 +116,7 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         ut::logging("%d\n", count);
 
         char send_buffer[64] = {"hello"};
-        if (int len = send(mSocket, send_buffer, static_cast<int>(strlen(send_buffer)) + 1, 0) > 0)
+        if (int len = ::send(mSocket, send_buffer, static_cast<int>(strlen(send_buffer)) + 1, 0) > 0)
         {
             ut::logging("%d\n", len);
         }
