@@ -51,7 +51,6 @@ public:
 
 private:
     bool createNewProcess();
-    void sendPacket(const sys::SCIPacket::RawDataHeader header);
 
 private:
     SOCKET mSocket;
@@ -133,7 +132,7 @@ bool SCIServer::Impl::Disconnect()
     }
     else
     {
-        sendPacket(sys::SCIPacket::DISCONNECT);
+        send(&mSocket, sys::SCIPacket::DISCONNECT);
         closesocket(mSocket);
     }
 

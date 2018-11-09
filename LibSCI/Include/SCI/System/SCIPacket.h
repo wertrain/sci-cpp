@@ -52,7 +52,7 @@ public:
     SCIPacketSender();
     virtual ~SCIPacketSender();
 
-private:
+protected:
     void send(SOCKET* socket, const sys::SCIPacket::RawDataHeader header);
 };
 
