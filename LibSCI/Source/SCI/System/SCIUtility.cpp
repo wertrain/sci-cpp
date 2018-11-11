@@ -5,6 +5,7 @@
 #include <Precompiled.h>
 #include <stdarg.h>
 
+#include <cstdio>
 #ifdef _WIN64
 #include <Windows.h>
 #endif // _WIN64
@@ -12,7 +13,21 @@
 
 NS_SCI_UT_BEGIN
 
-void logging(const char* format, ...)
+void std_logging(const char* format, ...)
+{
+    va_list arg;
+
+    const size_t size = 1024;
+    char buffer[size];
+
+    va_start(arg, format);
+    vsnprintf(buffer, size, format, arg);
+    va_end(arg);
+
+    printf(buffer);
+}
+
+void debug_logging(const char* format, ...)
 {
     va_list arg;
 

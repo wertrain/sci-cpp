@@ -173,6 +173,9 @@ void SCIServer::Impl::Proc(Process* process)
             case sys::SCIPacket::DISCONNECT:
                 connected = false;
                 break;
+            case sys::SCIPacket::MESSAGE:
+                ut::logging("%s\n", rawData.mBody);
+                break;
             }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(process->GetIntervalTime()));

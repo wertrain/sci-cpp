@@ -90,6 +90,7 @@ bool SCIClient::Impl::Disconnect()
     }
     else
     {
+        send(&mSocket, sys::SCIPacket::DISCONNECT);
         closesocket(mSocket);
     }
     return true;
@@ -118,6 +119,7 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         char send_buffer[64] = {"hello"};
         if (int len = ::send(mSocket, send_buffer, static_cast<int>(strlen(send_buffer)) + 1, 0) > 0)
         {
+            send(&mSocket, sys::SCIPacket::MESSAGE);
             ut::logging("%d\n", len);
         }
 
