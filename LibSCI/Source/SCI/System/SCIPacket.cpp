@@ -46,7 +46,7 @@ bool SCIPacket::Set(const RawDataHeader header, const int8_t* body, const size_t
     Set(header);
     ::memset(mRawData.mBody, 0, RAWDATA_BODY_SIZE);
     ::memcpy(mRawData.mBody, body, bodySize);
-    mRawData.mHeader[RAWDATA_DATA_SIZE_INDEX] = bodySize;
+    mRawData.mHeader[RAWDATA_DATA_SIZE_INDEX] = static_cast<uint8_t>(bodySize);
     return true;
 }
 
@@ -85,15 +85,27 @@ int SCIPacketSender::send(SOCKET* socket, const void* data, const size_t dataSiz
         
         size_t sendDataSize;
         packet.CopyBuffer(buffer, sendDataSize);
-        return ::send(*socket, buffer, sendDataSize, 0);
+        return ::send(*socket, buffer, static_cast<int>(sendDataSize), 0);
     }
     else
     {
+        const int8_t* remainData = static_cast<const int8_t*>(data);
+        size_t remainSize = dataSize;
+        while (remainSize != 0)
+        {
+            size_t size = remainSize > sys::SCIPacket::RAWDATA_BODY_SIZE ? sys::SCIPacket::RAWDATA_BODY_SIZE : remainSize;
+            packet.Set(sys::SCIPacket::MESSAGE, static_cast<const int8_t*>(remainData), size);
 
+            size_t sendDataSize;
+            packet.CopyBuffer(buffer, sendDataSize);
+            if (int realSendSize = ::send(*socket, buffer, static_cast<int>(sendDataSize), 0) > 0)
+            {
+                remainSize -= realSendSize;
+                remainData += realSendSize;
+            }
+        }
+        return static_cast<int>(dataSize);
     }
-
-    sys::SCIPacket::RawData rawData = packet.GetData();
-    memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
 
 }
 
