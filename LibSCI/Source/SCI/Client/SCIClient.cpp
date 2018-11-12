@@ -117,9 +117,8 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         ut::logging("%d\n", count);
 
         char send_buffer[64] = {"hello"};
-        if (int len = ::send(mSocket, send_buffer, static_cast<int>(strlen(send_buffer)) + 1, 0) > 0)
+        if (int len = send(&mSocket, send_buffer, static_cast<int>(strlen(send_buffer)) + 1) > 0)
         {
-            send(&mSocket, sys::SCIPacket::MESSAGE);
             ut::logging("%d\n", len);
         }
 
