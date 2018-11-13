@@ -121,6 +121,10 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         {
             ut::logging("%d\n", len);
         }
+        else
+        {
+            continue;
+        }
 
         char buffer[1024];
         if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)

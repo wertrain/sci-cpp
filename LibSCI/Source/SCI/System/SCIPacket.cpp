@@ -31,7 +31,8 @@ const SCIPacket::RawData& SCIPacket::GetData()
 
 void SCIPacket::CopyBuffer(char* buffer, size_t& dataSize)
 {
-    memcpy(buffer, &mRawData, mRawData.mHeader[RAWDATA_DATA_SIZE_INDEX]);
+    dataSize = mRawData.mHeader[RAWDATA_DATA_SIZE_INDEX];
+    memcpy(buffer, &mRawData, dataSize);
 }
 
 void SCIPacket::Set(const RawDataHeader header)
@@ -40,7 +41,7 @@ void SCIPacket::Set(const RawDataHeader header)
     ::memcpy(mRawData.mHeader + sizeof(SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN), RAWDATA_HEADER_MAGIC_TOKEN, sizeof(RAWDATA_HEADER_MAGIC_TOKEN));
 }
 
-bool SCIPacket::Set(const RawDataHeader header, const int8_t* body, const size_t bodySize)
+bool SCIPacket::Set(const RawDataHeader header, const void* body, const size_t bodySize)
 {
     if (bodySize > RAWDATA_BODY_SIZE) return false;
     Set(header);
@@ -64,14 +65,14 @@ SCIPacketSender::~SCIPacketSender()
 
 int SCIPacketSender::send(SOCKET* socket, const sys::SCIPacket::RawDataHeader header)
 {
-    char buffer[sys::SCIPacket::RAWDATA_BODY_SIZE];
+    size_t dataSize = 0;
+    char buffer[sys::SCIPacket::RAWDATA_BODY_SIZE] = { 0 };
 
     sys::SCIPacket packet;
     packet.Set(header);
+    packet.CopyBuffer(buffer, dataSize);
 
-    sys::SCIPacket::RawData rawData = packet.GetData();
-    memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
-    return ::send(*socket, buffer, sizeof(sys::SCIPacket::RawData), 0);
+    return ::send(*socket, buffer, static_cast<int>(dataSize), 0);
 }
 
 int SCIPacketSender::send(SOCKET* socket, const void* data, const size_t dataSize)
