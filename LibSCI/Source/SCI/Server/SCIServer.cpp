@@ -158,14 +158,16 @@ void SCIServer::Impl::Proc(Process* process)
 
     // 次の接続待ちを開始
     createNewProcess();
-
+    ut::logging("recive..\n");
     // 受信ループ
     bool connected = true;
     while (connected)
     {
         char buffer[1024];
-        if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)
+        if (recv(sockclient, buffer, sizeof(buffer), 0) > 0)
         {
+            ut::logging("recive data.\n");
+
             sys::SCIPacket::RawData rawData;
             memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
             switch (rawData.mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX])
@@ -178,6 +180,7 @@ void SCIServer::Impl::Proc(Process* process)
                 break;
             }
         }
+        ut::logging("recive...\n");
         std::this_thread::sleep_for(std::chrono::milliseconds(process->GetIntervalTime()));
     }
 
