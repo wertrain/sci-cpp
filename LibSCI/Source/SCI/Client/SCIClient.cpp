@@ -117,7 +117,13 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         ut::logging("%d\n", count);
 
         char send_buffer[64] = {"hello"};
-        if (int len = send(&mSocket, send_buffer, static_cast<int>(strlen(send_buffer)) + 1) > 0)
+        sys::SCIPacket packet;
+        packet.Set(sys::SCIPacket::MESSAGE, send_buffer, static_cast<int>(strlen(send_buffer)));
+
+        char buffer[1024];
+        size_t size = 0;
+        packet.CopyBuffer(buffer, size);
+        if (int len = send(&mSocket, buffer, size) > 0)
         {
             ut::logging("%d\n", len);
         }
@@ -126,7 +132,7 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
             continue;
         }
 
-        char buffer[1024];
+        /*char buffer[1024];
         if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)
         {
             sys::SCIPacket::RawData rawData;
@@ -137,7 +143,7 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
                 connected = false;
                 break;
             }
-        }
+        }*/
     }
 }
 
