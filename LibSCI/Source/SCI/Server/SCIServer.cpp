@@ -164,7 +164,7 @@ void SCIServer::Impl::Proc(Process* process)
     while (connected)
     {
         char buffer[1024];
-        if (recv(sockclient, buffer, sizeof(buffer), 0) > 0)
+        if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)
         {
             ut::logging("recive data.\n");
 

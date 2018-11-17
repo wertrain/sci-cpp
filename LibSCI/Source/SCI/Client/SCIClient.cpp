@@ -123,7 +123,7 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         char buffer[1024];
         size_t size = 0;
         packet.CopyBuffer(buffer, size);
-        if (int len = send(&mSocket, buffer, size) > 0)
+        if (int len = send(&mSocket, buffer, size))
         {
             ut::logging("%d\n", len);
         }
