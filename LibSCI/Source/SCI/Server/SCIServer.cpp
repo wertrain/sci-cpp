@@ -82,7 +82,7 @@ bool SCIServer::Impl::createNewProcess()
         return false;
     }
 
-    thread->join();
+    thread->detach();
 
     mProcessList.push_back(process);
 
@@ -108,6 +108,10 @@ bool SCIServer::Impl::Connect(const int port, const char* address)
     if (int error = bind(mSocket, (struct sockaddr *)&addr, sizeof(addr)))
     {
         ut::error("socket bind error. (%d)\n", WSAGetLastError());
+
+        closesocket(mSocket);
+        mSocket = INVALID_SOCKET;
+
         return false;
     }
 
@@ -115,11 +119,21 @@ bool SCIServer::Impl::Connect(const int port, const char* address)
     if (int error = listen(mSocket, backlog))
     {
         ut::error("socket listen error. (%d)\n", WSAGetLastError());
+
+        closesocket(mSocket);
+        mSocket = INVALID_SOCKET;
+
         return false;
     }
 
     // 最初のプロセスを作成
     createNewProcess();
+
+    // スレッド終了待ち
+    while (!mProcessList.empty())
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
 
     return true;
 }
@@ -156,15 +170,18 @@ void SCIServer::Impl::Proc(Process* process)
     ut::logging("wait connection. please start client.\n");
     SOCKET sockclient = accept(mSocket, (struct sockaddr *)&addr, &len);
 
+    ut::logging("connection accepted.\n");
+
     // 次の接続待ちを開始
     createNewProcess();
+
     ut::logging("recive..\n");
     // 受信ループ
     bool connected = true;
     while (connected)
     {
         char buffer[1024];
-        if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)
+        if (recv(sockclient, buffer, sizeof(buffer), 0) > 0)
         {
             ut::logging("recive data.\n");
 
@@ -180,11 +197,19 @@ void SCIServer::Impl::Proc(Process* process)
                 break;
             }
         }
-        ut::logging("recive...\n");
+
         std::this_thread::sleep_for(std::chrono::milliseconds(process->GetIntervalTime()));
     }
 
     closesocket(sockclient);
+
+    for (auto it = mProcessList.begin(); it != mProcessList.end(); ++it) {
+        if (*it == process)
+        {
+            mProcessList.erase(it);
+            break;
+        }
+    }
 
     ut::logging("disconnected client.\n");
 }

@@ -67,6 +67,10 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
     if (connect(mSocket, (struct sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
     {
         ut::error("socket connect error. (%d)\n", WSAGetLastError());
+
+        closesocket(mSocket); 
+        mSocket = INVALID_SOCKET;
+        
         return false;
     }
 
@@ -74,6 +78,11 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
 
     if (!th.joinable())
     {
+        ut::error("thread error.\n");
+
+        closesocket(mSocket);
+        mSocket = INVALID_SOCKET;
+
         return false;
     }
 
@@ -108,31 +117,20 @@ int SCIClient::Impl::GetLastError() const
 
 void SCIClient::Impl::Proc(long long intervalOfTime)
 {
-    int count = 0;
     bool connected = true;
     while (connected)
     {
-        ++count;
-        std::this_thread::sleep_for(std::chrono::milliseconds(intervalOfTime));
-        ut::logging("%d\n", count);
-
         char send_buffer[64] = {"hello"};
-        sys::SCIPacket packet;
-        packet.Set(sys::SCIPacket::MESSAGE, send_buffer, static_cast<int>(strlen(send_buffer)));
-
-        char buffer[1024];
-        size_t size = 0;
-        packet.CopyBuffer(buffer, size);
-        if (int len = send(&mSocket, buffer, size))
+        if (int len = send(&mSocket, send_buffer, static_cast<int>(strlen(send_buffer))))
         {
-            ut::logging("%d\n", len);
+            ut::logging("send message.");
         }
         else
         {
             continue;
         }
 
-        /*char buffer[1024];
+        char buffer[1024];
         if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)
         {
             sys::SCIPacket::RawData rawData;
@@ -143,7 +141,7 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
                 connected = false;
                 break;
             }
-        }*/
+        }
     }
 }
 
