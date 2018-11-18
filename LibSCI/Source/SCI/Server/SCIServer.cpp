@@ -203,7 +203,8 @@ void SCIServer::Impl::Proc(Process* process)
 
     closesocket(sockclient);
 
-    for (auto it = mProcessList.begin(); it != mProcessList.end(); ++it) {
+    for (auto it = mProcessList.begin(); it != mProcessList.end(); ++it)
+    {
         if (*it == process)
         {
             mProcessList.erase(it);
