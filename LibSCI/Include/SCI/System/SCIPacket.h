@@ -41,6 +41,8 @@ public:
     ~SCIPacket();
     const RawData& GetData();
     void CopyBuffer(char* buffer, size_t& dataSize);
+    bool FromBuffer(const char* buffer, const size_t dataSize);
+    bool IsValid();
 
     void Set(const RawDataHeader header);
     bool Set(const RawDataHeader header, const void* body, const size_t bodySize);

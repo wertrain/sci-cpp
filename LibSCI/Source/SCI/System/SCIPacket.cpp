@@ -35,6 +35,26 @@ void SCIPacket::CopyBuffer(char* buffer, size_t& dataSize)
     memcpy(buffer, &mRawData, dataSize);
 }
 
+bool SCIPacket::FromBuffer(const char* buffer, const size_t dataSize)
+{
+    if (sizeof(RawData) < dataSize) return false;
+    ::memcpy(mRawData.mHeader, buffer, dataSize);
+    return true;
+}
+
+bool SCIPacket::IsValid()
+{
+    uint8_t* p = mRawData.mHeader + sizeof(SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN);
+    if (p[0] == SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN[0] &&
+        p[1] == SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN[1] &&
+        p[2] == SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN[2] &&
+        p[3] == SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN[3])
+    {
+        return true;
+    }
+    return false;
+}
+
 void SCIPacket::Set(const RawDataHeader header)
 {
     mRawData.mHeader[0] = header;

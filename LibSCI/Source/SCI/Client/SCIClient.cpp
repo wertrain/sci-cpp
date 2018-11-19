@@ -133,8 +133,9 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         char buffer[1024];
         if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)
         {
-            sys::SCIPacket::RawData rawData;
-            memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
+            sys::SCIPacket packet;
+            //packet.FromBuffer(buffer, )
+            //memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
             switch (rawData.mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX])
             {
             case sys::SCIPacket::DISCONNECT:
