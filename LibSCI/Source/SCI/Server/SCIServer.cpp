@@ -194,6 +194,8 @@ void SCIServer::Impl::Proc(Process* process)
                 break;
             case sys::SCIPacket::MESSAGE:
                 ut::logging("%s\n", rawData.mBody);
+                send(&mSocket, sys::SCIPacket::DISCONNECT);
+                ut::logging("goodbye.\n");
                 break;
             }
         }

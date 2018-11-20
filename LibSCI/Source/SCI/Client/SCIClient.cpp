@@ -134,9 +134,9 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)
         {
             sys::SCIPacket packet;
-            //packet.FromBuffer(buffer, )
-            //memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
-            switch (rawData.mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX])
+            size_t dataSize = 0;
+            packet.FromBuffer(buffer, dataSize);
+            switch (packet.GetData().mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX])
             {
             case sys::SCIPacket::DISCONNECT:
                 connected = false;
