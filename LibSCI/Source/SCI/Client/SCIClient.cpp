@@ -50,6 +50,9 @@ SCIClient::Impl::~Impl()
 
 bool SCIClient::Impl::Connect(const int port, const char* address)
 {
+    char buffer[26];
+    scanf("%s", buffer);
+
     mSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (mSocket == INVALID_SOCKET)
     {
@@ -120,6 +123,7 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
     bool connected = true;
     while (connected)
     {
+
         char send_buffer[64] = {"hello"};
         if (int len = send(&mSocket, send_buffer, static_cast<int>(strlen(send_buffer))))
         {

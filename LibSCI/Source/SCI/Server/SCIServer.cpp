@@ -181,6 +181,7 @@ void SCIServer::Impl::Proc(Process* process)
     while (connected)
     {
         char buffer[1024];
+        send(&sockclient, sys::SCIPacket::DISCONNECT);
         if (recv(sockclient, buffer, sizeof(buffer), 0) > 0)
         {
             ut::logging("recive data.\n");
@@ -194,7 +195,7 @@ void SCIServer::Impl::Proc(Process* process)
                 break;
             case sys::SCIPacket::MESSAGE:
                 ut::logging("%s\n", rawData.mBody);
-                send(&mSocket, sys::SCIPacket::DISCONNECT);
+                send(&sockclient, sys::SCIPacket::DISCONNECT);
                 ut::logging("goodbye.\n");
                 break;
             }

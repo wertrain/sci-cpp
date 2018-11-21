@@ -86,7 +86,7 @@ SCIPacketSender::~SCIPacketSender()
 int SCIPacketSender::send(SOCKET* socket, const sys::SCIPacket::RawDataHeader header)
 {
     size_t dataSize = 0;
-    char buffer[sys::SCIPacket::RAWDATA_BODY_SIZE] = { 0 };
+    char buffer[sizeof(sys::SCIPacket)] = { 0 };
 
     sys::SCIPacket packet;
     packet.Set(header);
