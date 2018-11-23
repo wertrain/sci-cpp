@@ -16,7 +16,8 @@
 namespace sci
 {
 
-static const long long INTERVAL_OF_TIME_MILLISECONDS = 1000;
+static const long long INTERVAL_OF_PROCESS_TIME_MILLISECONDS = 1000;
+static const long long INTERVAL_OF_RETRY_TIME_MILLISECONDS = 5000;
 
 class SCIClient::Impl : public sys::SCIPacketSender
 {
@@ -33,12 +34,14 @@ private:
     SOCKET mSocket;
     const char* mBuffer;
     const size_t mBufferSize;
+    bool mDisconnectRequest;
 };
 
 SCIClient::Impl::Impl()
     : mSocket(INVALID_SOCKET)
     , mBuffer(nullptr)
     , mBufferSize(0)
+    , mDisconnectRequest(false)
 {
 
 }
@@ -50,9 +53,6 @@ SCIClient::Impl::~Impl()
 
 bool SCIClient::Impl::Connect(const int port, const char* address)
 {
-    char buffer[26];
-    scanf("%s", buffer);
-
     mSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (mSocket == INVALID_SOCKET)
     {
@@ -67,17 +67,28 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
     // https://qiita.com/parallax_kk/items/9e877542fecb4087729f
     InetPtonA(addr.sin_family, address, &addr.sin_addr.S_un.S_addr);
 
-    if (connect(mSocket, (struct sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+    bool connected = false;
+    while (!connected)
     {
-        ut::error("socket connect error. (%d)\n", WSAGetLastError());
+        if (connect(mSocket, (struct sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(INTERVAL_OF_RETRY_TIME_MILLISECONDS));
 
-        closesocket(mSocket); 
-        mSocket = INVALID_SOCKET;
-        
-        return false;
+            ut::info("can not connect to server. retry.\n");
+        }
+
+        if (mDisconnectRequest)
+        {
+            ut::error("cancel connection.\n");
+
+            closesocket(mSocket);
+            mSocket = INVALID_SOCKET;
+
+            return false;
+        }
     }
 
-    std::thread th(&SCIClient::Impl::Proc, this, INTERVAL_OF_TIME_MILLISECONDS);
+    std::thread th(&SCIClient::Impl::Proc, this, INTERVAL_OF_PROCESS_TIME_MILLISECONDS);
 
     if (!th.joinable())
     {
@@ -147,6 +158,8 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
                 break;
             }
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(intervalOfTime));
     }
 }
 
