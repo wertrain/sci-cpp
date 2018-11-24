@@ -175,7 +175,6 @@ void SCIServer::Impl::Proc(Process* process)
     // 次の接続待ちを開始
     createNewProcess();
 
-    ut::logging("recive..\n");
     // 受信ループ
     bool connected = true;
     while (connected)
@@ -184,7 +183,7 @@ void SCIServer::Impl::Proc(Process* process)
         send(&sockclient, sys::SCIPacket::DISCONNECT);
         if (recv(sockclient, buffer, sizeof(buffer), 0) > 0)
         {
-            ut::logging("recive data.\n");
+            ut::logging("data recived.\n");
 
             sys::SCIPacket::RawData rawData;
             memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));
