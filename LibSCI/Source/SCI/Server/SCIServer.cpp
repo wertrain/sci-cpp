@@ -183,7 +183,7 @@ void SCIServer::Impl::Proc(Process* process)
         send(&sockclient, sys::SCIPacket::DISCONNECT);
         if (recv(sockclient, buffer, sizeof(buffer), 0) > 0)
         {
-            ut::logging("data recived.\n");
+            ut::logging("data received.\n");
 
             sys::SCIPacket::RawData rawData;
             memcpy(&rawData, buffer, sizeof(sys::SCIPacket::RawData));

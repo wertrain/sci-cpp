@@ -70,7 +70,8 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
     bool connected = false;
     while (!connected)
     {
-        if (connect(mSocket, (struct sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
+
+        if ((connected = connect(mSocket, (struct sockaddr*)&addr, sizeof(addr))) == SOCKET_ERROR)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(INTERVAL_OF_RETRY_TIME_MILLISECONDS));
 
@@ -135,7 +136,7 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
     while (connected)
     {
 
-        char send_buffer[64] = {"hello"};
+        char send_buffer[64] = {"goodbye"};
         if (int len = send(&mSocket, send_buffer, static_cast<int>(strlen(send_buffer))))
         {
             ut::logging("send message.");
@@ -146,11 +147,11 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         }
 
         char buffer[1024];
-        if (recv(mSocket, buffer, sizeof(buffer), 0) > 0)
+        if (int recvSize = recv(mSocket, buffer, sizeof(buffer), 0) > 0)
         {
             sys::SCIPacket packet;
             size_t dataSize = 0;
-            packet.FromBuffer(buffer, dataSize);
+            packet.FromBuffer(buffer, recvSize);
             switch (packet.GetData().mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX])
             {
             case sys::SCIPacket::DISCONNECT:
