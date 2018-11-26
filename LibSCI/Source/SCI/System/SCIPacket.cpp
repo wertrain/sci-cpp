@@ -55,6 +55,11 @@ bool SCIPacket::IsValid()
     return false;
 }
 
+void SCIPacket::SetFlag(const int8_t flag)
+{
+    mRawData.mHeader[RAWDATA_FLAG_INDEX] = flag;
+}
+
 void SCIPacket::Set(const RawDataHeader header)
 {
     mRawData.mHeader[0] = header;
@@ -112,11 +117,12 @@ int SCIPacketSender::send(SOCKET* socket, const void* data, const size_t dataSiz
     {
         const int8_t* remainData = static_cast<const int8_t*>(data);
         size_t remainSize = dataSize;
+
+        size_t size = sys::SCIPacket::RAWDATA_BODY_SIZE;
+        packet.Set(sys::SCIPacket::LINK_MESSAGE_BEGIN, static_cast<const int8_t*>(remainData), size);
+
         while (remainSize != 0)
         {
-            size_t size = remainSize > sys::SCIPacket::RAWDATA_BODY_SIZE ? sys::SCIPacket::RAWDATA_BODY_SIZE : remainSize;
-            packet.Set(sys::SCIPacket::MESSAGE, static_cast<const int8_t*>(remainData), size);
-
             size_t sendDataSize;
             packet.CopyBuffer(buffer, sendDataSize);
             if (int realSendSize = ::send(*socket, buffer, static_cast<int>(sendDataSize), 0))
@@ -124,9 +130,36 @@ int SCIPacketSender::send(SOCKET* socket, const void* data, const size_t dataSiz
                 remainSize -= realSendSize;
                 remainData += realSendSize;
             }
+
+            if (remainSize == 0)
+            {
+                break;
+            }
+            else if (remainSize > sys::SCIPacket::RAWDATA_BODY_SIZE)
+            {
+                size = sys::SCIPacket::RAWDATA_BODY_SIZE;
+                packet.Set(sys::SCIPacket::LINK_MESSAGE, static_cast<const int8_t*>(remainData), size);
+            }
+            else
+            {
+                size = remainSize;
+                packet.Set(sys::SCIPacket::LINK_MESSAGE_END, static_cast<const int8_t*>(remainData), size);
+            }
         }
         return static_cast<int>(dataSize);
     }
+
+}
+
+//-------------------------------------------------------------------------------------------------
+
+SCIPacketReceiver::SCIPacketReceiver()
+{
+
+}
+
+SCIPacketReceiver::~SCIPacketReceiver()
+{
 
 }
 

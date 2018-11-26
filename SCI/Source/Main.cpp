@@ -8,7 +8,7 @@ int main()
     const int port = 101012;
     const char* address = "127.0.0.1:8080";
 
-#ifndef _DEBUG
+#ifdef _DEBUG
     sci::SCIClient client;
     client.Connect(port, address);
 #else
