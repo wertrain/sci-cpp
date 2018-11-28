@@ -28,14 +28,14 @@ public:
     static const size_t RAWDATA_BODY_SIZE = 1024;
     static const int RAWDATA_HEADER_INDEX = 0;
     static const int RAWDATA_FLAG_INDEX = 1;
-    static const int RAWDATA_DATA_SIZE_INDEX = 2;
     static const int8_t RAWDATA_HEADER_MAGIC_TOKEN[4];
 
     struct RawData
     {
-        uint8_t mHeader[8];
-        uint8_t mBody[RAWDATA_BODY_SIZE];
-        uint8_t mPadding[8];
+        uint8_t  mHeader[8];
+        uint16_t mDataSize;
+        uint8_t  mBody[RAWDATA_BODY_SIZE];
+        uint8_t  mPadding[6];
     };
 
 public:
@@ -76,8 +76,6 @@ public:
     virtual ~SCIPacketReceiver();
 
 protected:
-    int send(SOCKET* socket, const sys::SCIPacket::RawDataHeader header);
-    int send(SOCKET* socket, const void* data, const size_t dataSize);
 };
 
 NS_SCI_SYS_END
