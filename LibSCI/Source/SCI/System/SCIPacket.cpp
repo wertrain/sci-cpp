@@ -72,7 +72,7 @@ bool SCIPacket::Set(const RawDataHeader header, const void* body, const size_t b
     Set(header);
     ::memset(mRawData.mBody, 0, RAWDATA_BODY_SIZE);
     ::memcpy(mRawData.mBody, body, bodySize);
-    mRawData.mHeader[RAWDATA_DATA_SIZE_INDEX] = static_cast<uint8_t>(bodySize);
+    mRawData.mDataSize = static_cast<uint32_t>(bodySize);
     return true;
 }
 
@@ -154,11 +154,39 @@ int SCIPacketSender::send(SOCKET* socket, const void* data, const size_t dataSiz
 //-------------------------------------------------------------------------------------------------
 
 SCIPacketReceiver::SCIPacketReceiver()
+    : mRootLinkedData(nullptr)
 {
 
 }
 
 SCIPacketReceiver::~SCIPacketReceiver()
+{
+
+}
+
+bool SCIPacketReceiver::receive(SOCKET* socket)
+{
+    char buffer[sys::SCIPacket::RAWDATA_BODY_SIZE];
+    int recvSize = 0;
+    if ((recvSize = recv(*socket, buffer, sizeof(buffer), 0)) > 0)
+    {
+        sys::SCIPacket packet;
+        size_t dataSize = 0;
+        packet.FromBuffer(buffer, recvSize);
+        switch (packet.GetData().mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX])
+        {
+        case sys::SCIPacket::MESSAGE:
+
+        }
+    }
+}
+
+void SCIPacketReceiver::link(const uint8_t* mData, const size_t mDataSize)
+{
+    sLinkedDataPool
+}
+
+void SCIPacketReceiver::PeekMessage()
 {
 
 }
