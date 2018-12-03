@@ -75,7 +75,23 @@ public:
     SCIPacketReceiver();
     virtual ~SCIPacketReceiver();
 
+private:
+    struct LinkedData
+    {
+        uint8_t* mData;
+        size_t mDataSize;
+        LinkedData* mNextData;
+        LinkedData* mPrevData;
+        uint8_t mPadding[8];
+    };
+
 protected:
+    bool receive(SOCKET* socket);
+    void link(const uint8_t* mData, const size_t mDataSize);
+
+private:
+    LinkedData sLinkedDataPool[1024];
+    LinkedData* mRootLinkedData;
 };
 
 NS_SCI_SYS_END
