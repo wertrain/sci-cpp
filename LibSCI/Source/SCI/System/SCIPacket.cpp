@@ -176,17 +176,13 @@ bool SCIPacketReceiver::receive(SOCKET* socket)
         switch (packet.GetData().mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX])
         {
         case sys::SCIPacket::MESSAGE:
-
+            break;
         }
     }
+    return true;
 }
 
 void SCIPacketReceiver::link(const uint8_t* mData, const size_t mDataSize)
-{
-    sLinkedDataPool
-}
-
-void SCIPacketReceiver::PeekMessage()
 {
 
 }
