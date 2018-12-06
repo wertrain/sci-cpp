@@ -16,8 +16,8 @@
 namespace sci
 {
 
-static const long long INTERVAL_OF_PROCESS_TIME_MILLISECONDS = 1000;
-static const long long INTERVAL_OF_RETRY_TIME_MILLISECONDS = 5000;
+static const long long INTERVAL_OF_PROCESS_TIME_MILLISECONDS = 1000 * 1;
+static const long long INTERVAL_OF_RETRY_TIME_MILLISECONDS = 1000 * 5;
 
 class SCIClient::Impl : public sys::SCIPacketSender
 {
