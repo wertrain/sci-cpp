@@ -10,7 +10,7 @@
 
 NS_SCI_SYS_BEGIN
 
-const int8_t SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN[4] = { 0xf, 0xf, 0x1, 0x2 };
+const int8_t SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN[4] = { 0x3, 0xc, 0x1, 0xf };
 static_assert(sizeof(SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN) == sizeof(int8_t) * 4, "MAGIC_TOKEN");
 
 SCIPacket::SCIPacket()
