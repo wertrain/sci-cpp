@@ -172,6 +172,8 @@ void SCIServer::Impl::Proc(Process* process)
 
     ut::logging("connection accepted.\n");
 
+    ut::logging("hello, %s.\n", addr.sin_addr);
+
     // Ÿ‚ÌÚ‘±‘Ò‚¿‚ğŠJn
     createNewProcess();
 
