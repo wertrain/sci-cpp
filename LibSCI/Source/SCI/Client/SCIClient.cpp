@@ -138,7 +138,7 @@ void SCIClient::Impl::Proc(long long intervalOfTime)
         char send_buffer[64] = {"goodbye"};
         if (int len = send(&mSocket, send_buffer, static_cast<int>(strlen(send_buffer))))
         {
-            ut::logging("send message.");
+            ut::logging("send message. %d\n", len);
         }
         else
         {
