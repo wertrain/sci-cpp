@@ -70,10 +70,11 @@ bool SCIClient::Impl::Connect(const int port, const char* address)
     bool connected = false;
     while (!connected)
     {
-        if ((connected = connect(mSocket, (struct sockaddr*)&addr, sizeof(addr))) == SOCKET_ERROR)
+        if (connect(mSocket, (struct sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds(INTERVAL_OF_RETRY_TIME_MILLISECONDS));
+            connected = false;
 
+            std::this_thread::sleep_for(std::chrono::milliseconds(INTERVAL_OF_RETRY_TIME_MILLISECONDS));
             ut::info("can not connect to server. retry.\n");
         }
 
