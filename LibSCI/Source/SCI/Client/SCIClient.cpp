@@ -4,7 +4,6 @@
  */
 #include <Precompiled.h>
 
-#include <stdint.h>
 #include <thread>
 
 #include <winsock2.h>
