@@ -193,11 +193,11 @@ void SCIServer::Impl::Proc(Process* process)
             {
             case sys::SCIPacket::DISCONNECT:
                 connected = false;
+                ut::logging("goodbye, %s.\n", addr.sin_addr);
                 break;
             case sys::SCIPacket::MESSAGE:
                 ut::logging("%s\n", rawData.mBody);
                 send(&sockclient, sys::SCIPacket::DISCONNECT);
-                ut::logging("goodbye.\n");
                 break;
             }
         }
