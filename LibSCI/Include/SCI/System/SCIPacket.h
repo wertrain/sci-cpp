@@ -17,6 +17,7 @@ public:
         LINK_MESSAGE_BEGIN,
         LINK_MESSAGE,
         LINK_MESSAGE_END,
+        REQUEST_RESEND
     };
 
     enum RawDataHeaderFlag : int8_t
@@ -37,6 +38,8 @@ public:
         uint8_t  mBody[RAWDATA_BODY_SIZE];
         uint8_t  mPadding[6];
     };
+    static const size_t RAWDATA_SIZE = sizeof(RawData);
+    static_assert(RAWDATA_SIZE == RAWDATA_BODY_SIZE + 16, "");
 
 public:
     explicit SCIPacket();
