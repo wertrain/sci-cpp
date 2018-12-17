@@ -11,7 +11,7 @@
 NS_SCI_SYS_BEGIN
 
 const int8_t SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN[4] = { 0x3, 0xc, 0x1, 0xf };
-static_assert(sizeof(SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN) == sizeof(int8_t) * 4, "MAGIC_TOKEN");
+static_assert(sizeof(SCIPacket::RAWDATA_HEADER_MAGIC_TOKEN) == sizeof(int8_t) * 4, "sizeof MAGIC_TOKEN");
 
 SCIPacket::SCIPacket()
     : mRawData()
@@ -182,9 +182,33 @@ bool SCIPacketReceiver::receive(SOCKET* socket)
     return true;
 }
 
-void SCIPacketReceiver::link(const uint8_t* mData, const size_t mDataSize)
+bool SCIPacketReceiver::link(const uint8_t* data, const size_t dataSize)
 {
+    LinkedData* target = nullptr;
+    for (int i = 0; i < LINKED_DATA_POOL_SIZE; ++i)
+    {
+        if (mLinkedDataPool[i].mData == nullptr)
+        {
+            target = &mLinkedDataPool[i];
+            break;
+        }
+    }
+    if (target == nullptr) return false;
 
+    memset(target, 0, sizeof(LinkedData));
+
+    auto* p = mRootLinkedData;
+    while (p)
+    {
+        if (p->mNextData == nullptr)
+        {
+            p->mNextData = target;
+            target->mPrevData = p;
+            break;
+        }
+        p = p->mNextData;
+    }
+    return true;
 }
 
 NS_SCI_SYS_END
