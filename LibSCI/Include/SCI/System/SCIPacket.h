@@ -39,7 +39,7 @@ public:
         uint8_t  mPadding[6];
     };
     static const size_t RAWDATA_SIZE = sizeof(RawData);
-    static_assert(RAWDATA_SIZE == RAWDATA_BODY_SIZE + 16, "");
+    static_assert(RAWDATA_SIZE == RAWDATA_BODY_SIZE + 16, "RAWDATA_SIZE");
 
 public:
     explicit SCIPacket();
@@ -81,19 +81,20 @@ public:
 private:
     struct LinkedData
     {
-        uint8_t* mData;
+        const uint8_t* mData;
         size_t mDataSize;
         LinkedData* mNextData;
         LinkedData* mPrevData;
         uint8_t mPadding[8];
     };
+    static const size_t LINKED_DATA_POOL_SIZE = 1024;
 
 protected:
     bool receive(SOCKET* socket);
-    void link(const uint8_t* mData, const size_t mDataSize);
+    bool link(const uint8_t* mData, const size_t mDataSize);
 
 private:
-    LinkedData sLinkedDataPool[1024];
+    LinkedData mLinkedDataPool[LINKED_DATA_POOL_SIZE];
     LinkedData* mRootLinkedData;
 };
 
