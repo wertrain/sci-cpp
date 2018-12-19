@@ -29,6 +29,11 @@ const SCIPacket::RawData& SCIPacket::GetData()
     return mRawData;
 }
 
+const SCIPacket::RawData* SCIPacket::GetDataPointer()
+{
+    return &mRawData;
+}
+
 void SCIPacket::CopyBuffer(char* buffer, size_t& dataSize)
 {
     dataSize = sizeof(RawData);
@@ -175,8 +180,13 @@ bool SCIPacketReceiver::receive(SOCKET* socket)
         packet.FromBuffer(buffer, recvSize);
         switch (packet.GetData().mHeader[sys::SCIPacket::RAWDATA_HEADER_INDEX])
         {
-        case sys::SCIPacket::MESSAGE:
-            break;
+            case sys::SCIPacket::MESSAGE:
+            {
+                uint8_t* data = new uint8_t[packet.GetData().mDataSize];
+                memcpy(data, packet.GetDataPointer(), packet.GetData().mDataSize);
+                link(data, packet.GetData().mDataSize);
+                break;
+            }
         }
     }
     return true;
