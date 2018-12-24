@@ -45,6 +45,7 @@ public:
     explicit SCIPacket();
     ~SCIPacket();
     const RawData& GetData();
+    const RawData* GetDataPointer();
     void CopyBuffer(char* buffer, size_t& dataSize);
     bool FromBuffer(const char* buffer, const size_t dataSize);
     bool IsValid();
@@ -92,6 +93,7 @@ private:
 protected:
     bool receive(SOCKET* socket);
     bool link(const uint8_t* mData, const size_t mDataSize);
+    bool unlink(const uint8_t* mData);
 
 private:
     LinkedData mLinkedDataPool[LINKED_DATA_POOL_SIZE];
