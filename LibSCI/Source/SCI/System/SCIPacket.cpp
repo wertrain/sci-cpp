@@ -222,4 +222,21 @@ bool SCIPacketReceiver::link(const uint8_t* data, const size_t dataSize)
     return true;
 }
 
+bool SCIPacketReceiver::unlink(const uint8_t* mData)
+{
+    auto* p = mRootLinkedData;
+    while (p)
+    {
+        if (p->mData == mData)
+        {
+            p->mPrevData = p->mNextData;
+            p->mNextData->mPrevData = p->mPrevData;
+            p->mData == nullptr;
+            return true;
+        }
+        p = p->mNextData;
+    }
+    return false;
+}
+
 NS_SCI_SYS_END
