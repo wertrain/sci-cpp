@@ -231,7 +231,7 @@ bool SCIPacketReceiver::unlink(const uint8_t* mData)
         {
             p->mPrevData = p->mNextData;
             p->mNextData->mPrevData = p->mPrevData;
-            p->mData == nullptr;
+            p->mData = nullptr;
             return true;
         }
         p = p->mNextData;
