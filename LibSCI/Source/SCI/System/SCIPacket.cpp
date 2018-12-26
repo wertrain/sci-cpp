@@ -193,6 +193,11 @@ bool SCIPacketReceiver::receive(SOCKET* socket)
     return true;
 }
 
+SCIPacketReceiver::LinkedData* SCIPacketReceiver::pop()
+{
+    return nullptr;
+}
+
 bool SCIPacketReceiver::link(const uint8_t* data, const size_t dataSize)
 {
     LinkedData* target = nullptr;
