@@ -195,6 +195,16 @@ bool SCIPacketReceiver::receive(SOCKET* socket)
 
 SCIPacketReceiver::LinkedData* SCIPacketReceiver::pop()
 {
+    auto* p = mRootLinkedData;
+    while (p)
+    {
+        if (p->mNextData == nullptr)
+        {
+            p->mPrevData->mNextData = nullptr;
+            return p;
+        }
+        p = p->mNextData;
+    }
     return nullptr;
 }
 
